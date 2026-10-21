@@ -920,25 +920,45 @@ const ITAB=C.INV_TAB_ENTRIES||'Entries',STAB=C.INV_TAB_SECTIONS||'Sections';
 const VSI=C.VIEWERS_SEE_INVESTMENTS!==false;
 const SCOPE='https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/userinfo.email';
 let token=null,email=L.getItem('st_email')||'',tc=null;
-try{const t=JSON.parse(L.getItem('st_token')||'null');if(t&&t.exp>Date.now()+60000)token=t.v}catch(e){}
+let tokExp=0,refreshP=null,refreshT=null,silentFail=0;
+try{const t=JSON.parse(L.getItem('st_token')||'null');if(t&&t.exp>Date.now()+60000){token=t.v;tokExp=t.exp}}catch(e){}
 try{entries=JSON.parse(L.getItem('st_cache')||'[]')}catch(e){}
 try{const c=JSON.parse(L.getItem('iv_cache')||'null');if(c){ients=c.e||[];iproj=c.p||[]}}catch(e){}
 role=L.getItem('st_role')||'';
 
 function gisReady(){tc=google.accounts.oauth2.initTokenClient({client_id:C.CLIENT_ID,scope:SCOPE,callback:()=>{}});boot()}
-function signIn(){return new Promise((res,rej)=>{
+function signIn(silent){return new Promise((res,rej)=>{
   if(!tc)return rej(new Error('Google sign-in not loaded'));
-  tc.callback=r=>{if(r.error)return rej(new Error(r.error));token=r.access_token;
-    L.setItem('st_token',JSON.stringify({v:token,exp:Date.now()+(r.expires_in-60)*1000}));res(token)};
+  tc.callback=r=>{if(r.error)return rej(new Error(r.error));token=r.access_token;tokExp=Date.now()+(r.expires_in-60)*1000;silentFail=0;
+    L.setItem('st_token',JSON.stringify({v:token,exp:tokExp}));planRefresh();res(token)};
   tc.error_callback=e=>rej(new Error(e.type==='popup_closed'?'Sign-in cancelled':'Sign-in blocked'));
-  const o={prompt:email?'':'select_account'};if(email)o.login_hint=email;tc.requestAccessToken(o);
+  const o={prompt:silent?'none':(email?'':'select_account')};if(email)o.login_hint=email;tc.requestAccessToken(o);
 })}
-const tok=()=>token?Promise.resolve(token):signIn();
+/* Silent re-sign-in: ask Google for a new token without any screen. Works while the phone is still signed in to Google. */
+const fresh=()=>!!token&&tokExp>Date.now()+120000;
+function silentRefresh(){
+  if(refreshP)return refreshP;
+  if(Date.now()-silentFail<60000)return Promise.reject(new Error('silent sign-in unavailable'));
+  refreshP=Promise.race([signIn(true),new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),8000))]).catch(e=>{silentFail=Date.now();throw e}).finally(()=>{refreshP=null});
+  return refreshP;
+}
+function planRefresh(){
+  clearTimeout(refreshT);
+  refreshT=setTimeout(()=>{if(document.hidden)return;silentRefresh().catch(()=>{})},Math.max(tokExp-Date.now()-300000,15000));
+}
+async function tok(){
+  if(fresh())return token;
+  if(email){try{return await silentRefresh()}catch(e){}}
+  return signIn();
+}
 
 async function call(base,path,opt={}){
   if(!base)throw new Error('Investments sheet not set up (add INV_SHEET_ID to config.js)');
-  const r=await fetch(base+path,{...opt,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'}});
-  if(r.status===401){token=null;L.removeItem('st_token');armSync();throw new Error('Session expired. Tap to reconnect.')}
+  if(token&&email&&!fresh()){try{await silentRefresh()}catch(e){}}
+  const go=()=>fetch(base+path,{...opt,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'}});
+  let r=await go();
+  if(r.status===401&&email){try{await silentRefresh();r=await go()}catch(e){}}
+  if(r.status===401){token=null;tokExp=0;L.removeItem('st_token');armSync();throw new Error('Session expired. Tap to reconnect.')}
   if(!r.ok){let m='Request failed';try{m=(await r.json()).error.message}catch(e){}throw new Error(m)}
   return r.json();
 }
@@ -1061,7 +1081,7 @@ async function manualSync(){
 let armed=false,signing=false;
 function autoSync(){
   if(signing)return;signing=true;
-  Promise.race([signIn(),new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),8000))]).then(()=>start()).catch(()=>{armSync()}).finally(()=>{signing=false});
+  silentRefresh().then(()=>start()).catch(()=>{armSync()}).finally(()=>{signing=false});
 }
 function armSync(){
   if(armed)return;armed=true;
@@ -1097,7 +1117,7 @@ function signOut(){
   token=null;email='';role='';entries=[];ients=[];iproj=[];setBadges();document.body.classList.add('locked');render();
 }
 function boot(){
-  if(token)start();
+  if(token){start();planRefresh()}
   else if(email&&role){document.body.classList.remove('locked');applyRole();render();reconnectBanner()}
 }
 
@@ -1182,6 +1202,7 @@ function init(){
   render();
   document.addEventListener('visibilitychange',()=>{
     if(document.hidden||sub===2)return;
+    if(email&&role&&!fresh()){silentRefresh().then(()=>{fetchEntries().catch(e=>setStale('sav',true,errText(e)));loadInv()}).catch(()=>armSync());return}
     if(token&&role){fetchEntries().catch(e=>setStale('sav',true,errText(e)));loadInv()}
     else if(email&&role){autoSync()}
   });
