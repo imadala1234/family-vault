@@ -373,9 +373,85 @@ html.hidamt #tv::after{font-size:22px;color:#fff}
 
 .card .cu,.tot2 small{display:none}
 .tot2 .tl{white-space:nowrap}
+
+/* v14c: tighter top, date on the title row, fixed heights, nav lower, splash */
+:root{--navh:62px}
+body{padding-bottom:calc(max(4px,env(safe-area-inset-bottom,0px) - 14px) + var(--navh) + 12px)}
+.top{padding-top:calc(env(safe-area-inset-top,0px) + 10px)}
+@media (max-height:700px){.top{padding-top:calc(env(safe-area-inset-top,0px) + 8px)}}
+.bnav{padding-bottom:max(4px,calc(env(safe-area-inset-bottom,0px) - 14px))}
+.toast{bottom:calc(max(4px,env(safe-area-inset-bottom,0px) - 14px) + var(--navh) + 12px)}
+#ptitle{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin:0 2px 8px}
+#ptitle p{margin:0;font-size:13px;white-space:nowrap}
+#ptitle h2{font-size:30px}
+#form>.panel>.ph,#formI>.panel>.ph{display:none}
+/* tile heights never change when amounts are hidden or shown */
+.sumbar span{height:52px;justify-content:center}
+.sumbar i{display:block;height:20px;line-height:20px}
+html.hidamt .sumbar i::after{line-height:20px}
+.tot2{height:52px;padding-top:0;padding-bottom:0;align-items:center}
+#tv{display:block;height:34px;line-height:34px}
+html.hidamt #tv::after{line-height:34px}
+#cards.dense .card:not(.p),.card.p{height:52px;min-height:52px}
+#cards.dense .card .amt{display:block;height:28px;line-height:28px}
+html.hidamt #cards.dense .card .amt::after{line-height:28px}
+.card.p .rt b{display:block;height:22px;line-height:22px}
+html.hidamt .card.p .rt b::after{line-height:22px}
+.e>div:last-child span{display:block;line-height:20px;height:20px}
+html.hidamt .e>div:last-child span::after{line-height:20px}
+.mh2 .mv{display:block;height:14px;line-height:14px}
+/* opening animation */
+#splash{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:#0a1226;background-image:radial-gradient(60% 40% at 50% 42%,rgba(60,100,210,.28),transparent 70%);animation:spOut .45s ease 1.55s forwards}
+#splash img{width:150px;height:150px;object-fit:contain;animation:spIn .9s cubic-bezier(.2,.8,.2,1) both,spGlow 1.6s ease-in-out .5s both}
+#splash b{font-size:26px;font-weight:900;color:#e0b85c;letter-spacing:-.3px;animation:spTxt .6s ease .55s both}
+#splash b span{font-size:15px;letter-spacing:3px;color:#4f7de6;margin-left:6px}
+@keyframes spIn{from{opacity:0;transform:scale(.6) rotate(-18deg)}to{opacity:1;transform:none}}
+@keyframes spGlow{0%,100%{filter:drop-shadow(0 0 0 rgba(224,184,92,0))}50%{filter:drop-shadow(0 0 22px rgba(224,184,92,.55))}}
+@keyframes spTxt{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes spOut{to{opacity:0;visibility:hidden}}
+@media (prefers-reduced-motion:reduce){#splash{display:none}}
+
+/* v14d: slightly shorter tiles so three history rows fit */
+#cards .card,.card:not(.p){margin-bottom:6px!important}
+#cards .card:last-child{margin-bottom:0!important}
+#cards.dense .card:not(.p),.card.p{height:46px;min-height:46px}
+#cards.dense .card:not(.p){padding:5px 16px 6px!important;gap:3px 10px}
+#cards.dense .card .amt{height:24px;line-height:24px;font-size:min(21px,5.6vw)}
+html.hidamt #cards.dense .card .amt::after{line-height:24px;font-size:16px}
+#cards.dense .bar{height:3px}
+.card.p{padding:5px 16px!important}
+.card.p .rt b{height:20px;line-height:20px;font-size:17px}
+html.hidamt .card.p .rt b::after{line-height:20px}
+.card.p .cn b{font-size:15px}.card.p .cn small{font-size:11.5px}
+.sumbar span{height:46px}
+.tot2{height:46px}
+#tv{height:30px;line-height:30px}
+html.hidamt #tv::after{line-height:30px}
+.mh2{padding:5px 6px 3px;font-size:10.5px}
+.e,.e.gold,.e.savings,.e.emergency,.e.travel,.e.violet,.e.teal,.e.pink,.e.orange,.e.lime{padding:7px 12px!important;margin-bottom:6px!important}
+
+/* v14e: room for three history rows */
+body{padding-bottom:calc(max(4px,env(safe-area-inset-bottom,0px) - 14px) + var(--navh) + 4px)}
+.mh2{padding:4px 6px 2px;font-size:10px;line-height:11px}
+.mh2 .mv{height:11px;line-height:11px}
+html.hidamt .mh2 .mv::after{line-height:11px}
+.e,.e.gold,.e.savings,.e.emergency,.e.travel,.e.violet,.e.teal,.e.pink,.e.orange,.e.lime{padding:6px 12px!important;margin-bottom:5px!important}
+.bnav .nadd i{top:-16px;width:54px;height:54px;margin-left:-27px}
+.bnav .nadd svg{width:25px;height:25px}
+@media (max-height:700px){.bnav .nadd i{top:-14px;width:50px;height:50px;margin-left:-25px}}
+
+/* v14f: a little tighter at the top */
+.top{padding-top:calc(env(safe-area-inset-top,0px) + 6px)}
+header{margin-bottom:8px;padding-bottom:8px}
+#ptitle{margin-bottom:6px}
+.tot2{margin-bottom:6px}
+.sumbar{margin-bottom:6px}
+#hrow{margin:6px 4px 5px}
 </style>
 </head>
 <body class="locked">
+<div id="splash" aria-hidden="true"><img src="logo.png" alt=""><b>Family<span>VAULT</span></b></div>
+
 <script>try{var d=document.documentElement;if(localStorage.getItem("fv_cred"))d.classList.add("lk");d.classList.add("hidamt")}catch(e){}</script>
 <div class="top">
 <header><span class="pb" id="pSM"><img class="smg" src="sm.png" alt="SM"><b class="tx">SM</b><svg class="ey1" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="ey2" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></svg></span><h1><img src="favicon.png" alt=""><span class="w1">Family</span><span class="w2">VAULT</span></h1><span class="pb" id="pDM"><b class="tx">DM</b><svg class="ey1" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="ey2" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></svg></span></header>
@@ -1334,7 +1410,7 @@ function boot(){
 function reserve(){
   const pad=parseFloat(getComputedStyle(document.body).paddingBottom)||0;
   const standalone=navigator.standalone||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches);
-  return pad+4;
+  return pad+2;
 }
 const LV=[[10,8,14,12,16],[9,7,13.5,11.5,15],[8,6,13,11,14],[7,5,12.5,10.5,13],[6,4,12,10,12],[5,3,11.5,9.5,11],[4,3,11,9,10]];
 function setLevel(i){
@@ -1384,10 +1460,10 @@ function fitLogo(){
   if(g){
     g.style.display='';g.style.height='130px';
     const top=g.getBoundingClientRect().top+window.scrollY;
-    const size=Math.min(130,VH()-reserve()-top-6);
+    const size=Math.min(130,VH()-reserve()-top-6-14);
     if(size<80)g.style.display='none';else g.style.height=size+'px';
   }
-  if(box){box.style.maxHeight='';box.style.overflowY='';const t=box.getBoundingClientRect().top+window.scrollY,av=VH()-reserve()-t;if(box.scrollHeight>av&&av>120){box.style.maxHeight=av+'px';box.style.overflowY='auto'}}
+  if(box){box.style.maxHeight='';box.style.overflowY='';const t=box.getBoundingClientRect().top+window.scrollY,av=VH()-reserve()-t-14;if(box.scrollHeight>av&&av>120){box.style.maxHeight=av+'px';box.style.overflowY='auto'}}
 }
 function fitLayout(){fitHist();fitLogo();fitNums()}
 function fitNums(){
@@ -1426,7 +1502,7 @@ function init(){
   $('sq').addEventListener('input',e=>{q=e.target.value;render()});
   $('sq').addEventListener('keydown',e=>{if(e.key==='Enter')e.target.blur()});
   updateTools();
-  if(lockOn()&&document.documentElement.classList.contains('lk'))setTimeout(unlock,400);
+  if(lockOn()&&document.documentElement.classList.contains('lk'))setTimeout(unlock,2100);
   rebuildSections();fillSections();$('section').addEventListener('change',()=>{if($('section').value==='__new__'){$('section').value='';openSection()}});
   buildSeg('ntype',setIType);buildSeg('etype',setIEType);setIType('Investment');setIEType('Investment');
   fillProj();
