@@ -446,6 +446,11 @@ header{margin-bottom:8px;padding-bottom:8px}
 #ptitle{margin-bottom:6px}
 .tot2{margin-bottom:6px}
 .sumbar{margin-bottom:6px}
+/* v14h: smaller page headings, divider above the tiles, one logo at launch */
+#ptitle h2{font-size:24px;letter-spacing:-.5px}
+@media (max-height:700px){#ptitle h2{font-size:21px}}
+#cards{border-top:1px solid rgba(212,178,109,.35);padding-top:10px;margin-top:4px}
+html.lk #splash{display:none}
 /* v14g: push the top bar down one row, clear of the status bar */
 .top{padding-top:calc(env(safe-area-inset-top,0px) + 30px)}
 @media (max-height:700px){.top{padding-top:calc(env(safe-area-inset-top,0px) + 24px)}}
@@ -1509,7 +1514,7 @@ function init(){
   $('sq').addEventListener('input',e=>{q=e.target.value;render()});
   $('sq').addEventListener('keydown',e=>{if(e.key==='Enter')e.target.blur()});
   updateTools();
-  if(lockOn()&&document.documentElement.classList.contains('lk'))setTimeout(unlock,2100);
+  if(lockOn()&&document.documentElement.classList.contains('lk'))setTimeout(unlock,500);
   rebuildSections();fillSections();$('section').addEventListener('change',()=>{if($('section').value==='__new__'){$('section').value='';openSection()}});
   buildSeg('ntype',setIType);buildSeg('etype',setIEType);setIType('Investment');setIEType('Investment');
   fillProj();
