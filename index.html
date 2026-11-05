@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="theme-color" content="#0a1330">
+<meta name="theme-color" content="#0a1226">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -190,12 +190,197 @@ html.hidamt .amt::after,html.hidamt .card .rt b::after,html.hidamt .e>div:last-c
 html.hidamt .card .rt small::after{content:"\2022\2022\2022\2022";font-size:11px;letter-spacing:1px}
 html.hidamt .sumbar i::after{font-size:min(12.5px,3.2vw)}
 #cards{-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+
+/* ================= v14 restyle (SriMini-style navy HUB) ================= */
+:root{--bg:#0a1226;--hair:rgba(140,160,215,.20);--mut:#9aa7cf;--navh:66px;--r:26px}
+html{background-color:#0a1226;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 800' preserveAspectRatio='xMidYMin slice'%3E%3Cpolygon points='60,40 330,200 190,330 -70,170' fill='%2339589e' fill-opacity='.13'/%3E%3Cpolygon points='430,260 560,420 400,560 270,400' fill='%2339589e' fill-opacity='.10'/%3E%3Cpolygon points='-40,520 140,430 260,600 80,690' fill='%232a4680' fill-opacity='.12'/%3E%3C/svg%3E"),linear-gradient(180deg,#15264b 0,#0d1a38 45%,#091124 100%);background-size:cover;background-attachment:fixed}
+body{padding-bottom:calc(env(safe-area-inset-bottom,0px) + var(--navh) + 10px)}
+.top{background:none;padding-bottom:4px}
+/* header */
+header{margin:0 -16px 12px;padding:0 16px 10px;border:0;border-bottom:1px solid var(--hair);border-radius:0;background:none;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;grid-template-columns:40px 1fr 40px}
+h1{display:flex;align-items:center;justify-content:center;gap:8px;text-transform:none;letter-spacing:0;font-size:24px;font-weight:900;line-height:1}
+h1 img{width:30px;height:30px;object-fit:contain}
+h1 .w1{color:#e0b85c}h1 .w2{color:#4f7de6;font-size:15px;letter-spacing:2.5px;margin-left:-3px;align-self:flex-end;padding-bottom:3px}
+.pb{width:40px;height:40px;border:1px solid var(--hair);border-radius:50%;background:rgba(255,255,255,.06);color:#dbe3ff;font-size:12px;box-shadow:none}
+.pb.on{background:rgba(120,150,230,.22);border-color:rgba(120,150,230,.6);color:#fff;box-shadow:none}
+.pb.eye{background:rgba(255,255,255,.04);border:1px solid rgba(160,175,225,.45);color:#fff}
+html.hidamt .pb.eye{background:rgba(79,125,230,.25);border-color:#4f7de6;box-shadow:none}
+#mt,#st{display:none!important}
+/* title */
+#ptitle{margin:0 2px 10px}
+#ptitle h2{margin:0;font-size:32px;line-height:1.05;font-weight:900;letter-spacing:-.8px;color:#fff}
+#ptitle p{margin:6px 0 0;font-size:15px;color:var(--mut);font-weight:600}
+/* segmented control (add screen) */
+#addseg{display:flex;gap:6px;padding:5px;margin:0 0 10px;border-radius:20px;border:1px solid var(--hair);background:rgba(255,255,255,.03)}
+#addseg.hide{display:none}
+#addseg button{flex:1;border:1.5px solid transparent;background:none;padding:10px;border-radius:15px;font-size:15px;font-weight:800;color:#dbe3ff}
+#addseg button.on{background:rgba(79,125,230,.22);border-color:rgba(100,140,230,.75);color:#fff}
+/* accent system (muted, like the reference) */
+.card.gold,.e.gold,.sumbar span:nth-child(2){--ac:196,160,84}
+.card.savings,.e.savings,.sumbar span:nth-child(3){--ac:74,165,122}
+.card.emergency,.e.emergency{--ac:196,98,122}
+.card.travel,.e.travel,.sumbar span:nth-child(1){--ac:84,130,206}
+.card.violet,.e.violet{--ac:150,116,214}.card.teal,.e.teal{--ac:60,170,170}.card.pink,.e.pink{--ac:210,110,160}.card.orange,.e.orange{--ac:210,130,70}.card.lime,.e.lime{--ac:150,180,70}
+/* cards */
+#cards{border:0;background:none;box-shadow:none;padding:0;border-radius:0;-webkit-backdrop-filter:none;backdrop-filter:none}
+.card,.card.gold,.card.savings,.card.emergency,.card.travel,.card.violet,.card.teal,.card.pink,.card.orange,.card.lime{color:#fff;border:1.5px solid rgba(var(--ac,140,160,215),.75);border-radius:var(--r);background:linear-gradient(135deg,rgba(var(--ac,140,160,215),.20),rgba(12,20,42,.88) 85%);-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none}
+.card:not(.p){flex-direction:column;align-items:flex-start;justify-content:center;gap:var(--cg,3px);padding:calc(var(--cp,15px) - 4px) 20px;margin-bottom:var(--cm,8px);font-size:15px;text-align:left}
+.card .cl{display:flex;align-items:center;gap:12px;font-size:16px;font-weight:600;color:#fff;min-width:0;max-width:100%}
+.card .cl em{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.card .ci svg{display:block;width:22px;height:22px;stroke:#e6ecff;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.card .cv{display:flex;align-items:baseline;gap:10px;padding-left:34px}
+.card .cu{font-size:12px;font-weight:700;letter-spacing:1.2px;color:#dbe3ff}
+.card .amt{font-size:min(31px,8vw);font-weight:900;color:#fff;letter-spacing:-.6px;line-height:1.1;font-variant-numeric:tabular-nums}
+html.hidamt .card .amt::after{font-size:22px;letter-spacing:4px}
+.card.p{padding:var(--cp,10px) 18px;border-radius:22px}
+.card.p .cn b{color:#fff;font-size:16px}.card.p .cn small{color:var(--mut);opacity:1}
+.card.p .rt b{color:#fff;font-size:19px;font-weight:900}.card.p .rt small{color:rgb(var(--ac));opacity:1}
+.card.sel,.card.gold.sel{box-shadow:0 0 0 2px rgba(var(--ac),.95),0 0 14px rgba(var(--ac),.35)}
+/* totals bar */
+.sumbar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0;margin:0 0 10px;border:0;border-radius:0;background:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+.sumbar span{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:8px 12px;border-radius:18px;border:1.5px solid rgba(var(--ac),.75);background:linear-gradient(135deg,rgba(var(--ac),.20),rgba(12,20,42,.88) 85%);min-width:0}
+.sumbar b{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--mut)}
+.sumbar i{font-style:normal;font-size:min(15px,3.9vw);font-weight:900;color:#fff;font-variant-numeric:tabular-nums;white-space:nowrap}
+html.hidamt .sumbar i::after{font-size:min(13px,3.4vw)}
+/* history */
+#hist{border:1px solid var(--hair);border-radius:24px;background:rgba(255,255,255,.025);box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+.e,.e.gold,.e.savings,.e.emergency,.e.travel,.e.violet,.e.teal,.e.pink,.e.orange,.e.lime{color:#fff;background:linear-gradient(135deg,rgba(var(--ac,140,160,215),.16),rgba(12,20,42,.7) 85%);border:1px solid rgba(var(--ac,140,160,215),.55);border-radius:var(--rr,16px);-webkit-backdrop-filter:none;backdrop-filter:none}
+.e small,.e.gold small,.e.savings small,.e.emergency small,.e.travel small,.e.violet small,.e.teal small,.e.pink small,.e.orange small,.e.lime small{color:var(--mut);opacity:1}
+.e .t1{font-weight:700}
+h3{color:var(--mut);font-size:12px;letter-spacing:1px}
+.tb button,.tbx{width:32px;height:32px;border:1px solid rgba(160,175,225,.4);background:rgba(255,255,255,.04);color:#e6ecff}
+.tb button.on{background:rgba(79,125,230,.25);border-color:#4f7de6;box-shadow:none}
+#sq{border-radius:14px;border:1px solid var(--hair);height:34px}
+/* forms and buttons */
+.panel{border:1px solid var(--hair);border-radius:26px;background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.02));-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none}
+input,select{border:1px solid var(--hair);border-radius:16px;background:rgba(255,255,255,.05)}
+input:focus,select:focus{outline:2px solid #4f7de6}
+.seg button{border:1.5px solid var(--hair);border-radius:16px;background:rgba(255,255,255,.04);box-shadow:none;color:#dbe3ff}
+.seg button.on,.seg button.on.x{background:rgba(79,125,230,.22);border-color:rgba(100,140,230,.8);color:#fff;box-shadow:none}
+.seg button.on.x{background:rgba(196,98,122,.22);border-color:rgba(196,98,122,.85)}
+.save{border-radius:18px;color:#1a1305;background:linear-gradient(135deg,#ecc97d,#d9a43d);box-shadow:none}
+.btn2{border-radius:18px;border:1px solid var(--hair);background:rgba(255,255,255,.05)}
+.btn2.danger{border-color:rgba(255,138,128,.5)}
+.sheet-box{border-radius:28px;background:#0f1a36;border:1px solid var(--hair)}
+.sync{border-radius:16px;border:1px solid rgba(196,160,84,.55);background:rgba(196,160,84,.12)}
+.chips button,.mnav button,.mtot div{border-color:var(--hair)}
+.toast{bottom:calc(env(safe-area-inset-bottom,0px) + var(--navh) + 12px);border-radius:18px;border:1px solid var(--hair)}
+/* bottom nav */
+.bnav{position:fixed;left:0;right:0;bottom:0;z-index:30;padding:0 0 env(safe-area-inset-bottom,0px);background:rgba(9,16,34,.96);border-top:1px solid var(--hair);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.bnav>div{display:flex;align-items:stretch;padding:8px 8px 4px;gap:4px;max-width:560px;margin:0 auto}
+.bnav button{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;height:calc(var(--navh) - 12px);border:0;border-radius:6px;background:none;font-size:13px;font-weight:600;color:var(--mut);position:relative}
+.bnav button svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.bnav button.hide{display:none}
+.bnav .nsav{color:#e0b85c}.bnav .ninv{color:#6fa8ff}
+.bnav .nsav span,.bnav .ninv span{color:var(--mut)}
+.bnav button.on{background:rgba(120,150,220,.16)}
+.bnav button.on span{color:#fff;font-weight:800}
+.bnav .nadd{background:none!important}
+.bnav .nadd i{position:absolute;left:50%;top:-24px;margin:0 0 0 -29px;width:58px;height:58px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:radial-gradient(circle at 30% 25%,#1c2d62,#0b1330 70%);box-shadow:0 0 0 1.5px rgba(139,160,255,.55),0 0 22px rgba(107,140,255,.55),inset 0 0 14px rgba(107,140,255,.35)}
+.bnav .nadd i::before{content:"";position:absolute;inset:-3px;border-radius:50%;background:conic-gradient(from 200deg,#7aa8ff,#8b6cff,#ff7ab8,#e8b84a,#7aa8ff);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2.5px),#000 calc(100% - 2px));mask:radial-gradient(farthest-side,transparent calc(100% - 2.5px),#000 calc(100% - 2px))}
+.bnav .nadd svg{position:relative;width:27px;height:27px;stroke:#d6e4ff;stroke-width:2.8;filter:drop-shadow(0 0 6px rgba(122,168,255,.95))}
+.bnav .nadd.on i{transform:rotate(45deg);box-shadow:0 0 0 1.5px rgba(160,140,255,.8),0 0 30px rgba(139,108,255,.8),inset 0 0 16px rgba(139,108,255,.5)}
+.locked .bnav,.locked #ptitle,.locked #addseg{display:none}
+@media (max-height:700px){.top{padding-top:calc(env(safe-area-inset-top,0px) + 14px)}header{margin-bottom:6px;padding-bottom:6px}h1{font-size:20px}#ptitle h2{font-size:25px}#ptitle p{font-size:13px;margin-top:3px}#ptitle{margin-bottom:6px}:root{--navh:58px;--r:22px}.pb{width:34px;height:34px}.bnav .nadd i{width:50px;height:50px;margin-left:-25px;top:-18px}.card .amt{font-size:min(26px,7vw)}}
+
+/* solid background layer (works inside hosts that ignore html background) */
+html,body{background-color:#0a1226!important;color-scheme:dark}
+html{background-image:none!important}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background-color:#0a1226;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 800' preserveAspectRatio='xMidYMin slice'%3E%3Cpolygon points='60,40 330,200 190,330 -70,170' fill='%2339589e' fill-opacity='.13'/%3E%3Cpolygon points='430,260 560,420 400,560 270,400' fill='%2339589e' fill-opacity='.10'/%3E%3Cpolygon points='-40,520 140,430 260,600 80,690' fill='%232a4680' fill-opacity='.12'/%3E%3C/svg%3E"),linear-gradient(180deg,#15264b 0,#0d1a38 45%,#091124 100%);background-size:cover}
+#ptitle h2,#ptitle p{position:relative}
+
+/* v14 fixes: no clipped edges, glass save, clear of the + */
+body{padding-bottom:calc(env(safe-area-inset-bottom,0px) + var(--navh) + 30px)}
+#cards{padding:4px;margin:-4px}
+.card.sel,.card.gold.sel{box-shadow:inset 0 0 0 1.5px rgba(var(--ac),.95),0 0 0 0 transparent;border-color:rgb(var(--ac));background:linear-gradient(135deg,rgba(var(--ac),.34),rgba(12,20,42,.88) 85%)}
+.save{color:#f6dca0;border:1.5px solid rgba(224,176,70,.75);background:linear-gradient(135deg,rgba(236,201,125,.22),rgba(217,164,61,.10));-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+.save:disabled{opacity:.5}
+#form,#formI{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+@media (max-height:800px){#form input,#form select,#formI input,#formI select{height:38px}#form label,#formI label{margin:5px 6px 2px;font-size:13px}.panel{padding:12px 14px}#form .seg button,#formI .seg button{padding:7px 2px}.save{margin-top:8px;padding:10px}#ptitle h2{font-size:28px}}
+
+/* SM badge = logo */
+#pSM .smg{display:block;width:100%;height:100%;object-fit:contain}
+#pSM .tx{display:none}
+#pSM:not(.eye){border:0;background:none;box-shadow:none;padding:0;width:44px;height:44px;margin:-2px}
+#pSM.eye .smg{display:none}
+html:not(.hidamt) #pSM.eye{}
+h1 img{display:none}
+/* v14 extras: total, share bars, arrows, month heads, fade, empty state */
+.tot2{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 18px;margin:0 0 8px;border-radius:20px;border:1.5px solid rgba(120,150,230,.55);background:linear-gradient(135deg,rgba(84,130,206,.30),rgba(12,20,42,.88) 85%)}
+.tot2 .tl{font-size:14px;font-weight:700;color:#dbe3ff}
+.tot2 .tv{display:flex;align-items:baseline;gap:8px}
+.tot2 small{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--mut)}
+.tot2 b{font-size:min(24px,6.4vw);font-weight:900;color:#fff;letter-spacing:-.4px;font-variant-numeric:tabular-nums}
+html.hidamt #tv{font-size:0!important;letter-spacing:0}
+html.hidamt #tv::after{content:"\2022\2022\2022\2022\2022";font-size:18px;letter-spacing:3px}
+.card .bar{display:block;align-self:stretch;height:4px;border-radius:3px;background:rgba(255,255,255,.09);margin-top:1px;overflow:hidden}
+.card .bar i{display:block;height:100%;border-radius:3px;background:rgb(var(--ac))}
+html.hidamt .card .bar{visibility:hidden}
+.ar{display:inline-block;width:15px;font-size:13px;font-weight:900}
+.ar.up{color:var(--pos)}.ar.dn{color:var(--neg)}
+.mh2{display:flex;justify-content:space-between;align-items:baseline;padding:7px 6px 4px;font-size:11px;font-weight:800;letter-spacing:.9px;text-transform:uppercase;color:var(--mut)}
+.mh2:first-child{padding-top:1px}
+@keyframes fvin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+#funds:not(.hide),#form:not(.hide),#formI:not(.hide){animation:fvin .22s ease both}
+@media (prefers-reduced-motion:reduce){#funds,#form,#formI{animation:none!important}}
+.card:active{transform:scale(.985)}
+#hint{display:none}
+#hist.logomode{flex-direction:column;gap:12px}
+#hist.logomode #fl{height:auto!important;width:auto;max-height:96px;max-width:40%;opacity:.28}
+#hist.logomode #hint{display:block;margin:0;text-align:center;font-size:13.5px;font-weight:600;color:var(--mut);line-height:1.35;padding:0 16px}
+#form .logo,#formI .logo{opacity:.3}
+#auth .logo.big{width:150px}
+
+#cards.dense .card:not(.p){display:grid;grid-template-columns:1fr auto;align-items:center;gap:5px 10px;padding:calc(var(--cp,15px) - 5px) 18px calc(var(--cp,15px) - 4px)}
+#cards.dense .cv{padding-left:0}
+#cards.dense .amt{font-size:min(23px,6vw)}
+#cards.dense .bar{grid-column:1/-1}
+html.hidamt #cards.dense .card .amt::after{font-size:18px;letter-spacing:3px}
+
+.sumbar span,.sumbar span+span{border:1.5px solid rgba(var(--ac),.75)!important}
+#hint{display:none!important}
+/* v14 tiles: round-cornered rectangles; distinct total */
+:root{--r:14px}
+@media (max-height:700px){:root{--r:12px}}
+.card,.card.gold,.card.savings,.card.emergency,.card.travel,.card.violet,.card.teal,.card.pink,.card.orange,.card.lime,.card.p{border-radius:14px}
+.sumbar span{border-radius:12px}
+.e,.e.gold,.e.savings,.e.emergency,.e.travel,.e.violet,.e.teal,.e.pink,.e.orange,.e.lime{border-radius:11px!important}
+#hist{border-radius:18px}
+.tot2{display:grid;grid-template-columns:1fr auto;align-items:end;gap:0 12px;padding:11px 18px 12px;margin:0 0 10px;border:0;border-radius:14px;background:linear-gradient(135deg,#3b6fe6 0%,#6a4fd6 55%,#8a4fc8 100%);box-shadow:0 8px 24px rgba(90,100,230,.38),inset 0 1px 0 rgba(255,255,255,.28)}
+.tot2 .tl{align-self:center;font-size:12px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:rgba(255,255,255,.82)}
+.tot2 small{font-size:13px;font-weight:800;color:rgba(255,255,255,.8);letter-spacing:0}
+.tot2 b{font-size:min(30px,7.6vw);font-weight:900;color:#fff;letter-spacing:-.6px}
+html.hidamt #tv::after{font-size:22px;color:#fff}
+
+/* v14 fixed tile sizes (never change with selection) + glassier total */
+.card:not(.p){padding:13px 18px 12px!important;margin-bottom:8px!important}
+#cards.dense .card:not(.p){padding:8px 18px 9px!important;margin-bottom:8px!important}
+.card.p{padding:10px 18px!important;margin-bottom:8px!important}
+.card:last-child{margin-bottom:0!important}
+.e,.e.gold,.e.savings,.e.emergency,.e.travel,.e.violet,.e.teal,.e.pink,.e.orange,.e.lime{padding:9px 13px!important;margin-bottom:8px!important;font-size:14px!important}
+.e small{font-size:12px!important}
+#hist .e:last-child{margin-bottom:0!important}
+.tot2{background:linear-gradient(135deg,rgba(59,111,230,.55) 0%,rgba(106,79,214,.50) 55%,rgba(138,79,200,.48) 100%);border:1px solid rgba(255,255,255,.22);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 6px 20px rgba(90,100,230,.22),inset 0 1px 0 rgba(255,255,255,.2)}
+#cards.dense .card:not(.p),.card.p{min-height:52px}
+
+/* v14 glass totals */
+.sumbar span,.sumbar span+span{border:1px solid rgba(255,255,255,.22)!important;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
+.sumbar span:nth-child(1){background:linear-gradient(135deg,rgba(84,135,235,.42),rgba(52,90,205,.24))}
+.sumbar span:nth-child(2){background:linear-gradient(135deg,rgba(222,178,76,.40),rgba(170,122,42,.22))}
+.sumbar span:nth-child(3){background:linear-gradient(135deg,rgba(80,198,138,.38),rgba(36,140,100,.22))}
+.sumbar b{color:rgba(255,255,255,.78)}
+.tot2{background:linear-gradient(135deg,rgba(59,111,230,.40) 0%,rgba(106,79,214,.36) 55%,rgba(138,79,200,.34) 100%);box-shadow:0 4px 16px rgba(90,100,230,.14),inset 0 1px 0 rgba(255,255,255,.2)}
+
+.card .cu,.tot2 small{display:none}
+.tot2 .tl{white-space:nowrap}
 </style>
 </head>
 <body class="locked">
 <script>try{var d=document.documentElement;if(localStorage.getItem("fv_cred"))d.classList.add("lk");d.classList.add("hidamt")}catch(e){}</script>
 <div class="top">
-<header><span class="pb" id="pSM"><b class="tx">SM</b><svg class="ey1" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="ey2" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></svg></span><h1>Family Vault</h1><span class="pb" id="pDM"><b class="tx">DM</b><svg class="ey1" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="ey2" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></svg></span></header>
+<header><span class="pb" id="pSM"><img class="smg" src="sm.png" alt="SM"><b class="tx">SM</b><svg class="ey1" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="ey2" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></svg></span><h1><img src="favicon.png" alt=""><span class="w1">Family</span><span class="w2">VAULT</span></h1><span class="pb" id="pDM"><b class="tx">DM</b><svg class="ey1" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="ey2" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></svg></span></header>
+<div id="ptitle"><h2 id="pt">Savings</h2><p id="pd"></p></div>
+<div id="addseg" class="hide"><button id="as1" onclick="goAdd('sav')">Savings</button><button id="as2" onclick="goAdd('inv')">Investments</button></div>
 <div class="tabs" id="mt">
   <button id="m1" class="on" onclick="setApp('sav')">Savings</button>
   <button id="m2" onclick="setApp('inv')">Investments</button>
@@ -206,6 +391,11 @@ html.hidamt .sumbar i::after{font-size:min(12.5px,3.2vw)}
   <button id="t2" onclick="tab(2)">Add</button>
 </div>
 </div>
+<nav class="bnav" id="bnav" aria-label="Main"><div>
+<button id="n1" class="nsav on" onclick="setApp('sav')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5h13a3 3 0 013 3V18a2 2 0 01-2 2H6a2 2 0 01-2-2V7.5z"/><path d="M4 7.5L15 4v3.5M16 14h2.5"/></svg><span>Savings</span></button>
+<button id="nA" class="nadd" onclick="tab(sub===2?1:2)" aria-label="Add entry"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></i></button>
+<button id="n2" class="ninv" onclick="setApp('inv')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg><span>Investments</span></button>
+</div></nav>
 <div id="auth" class="panel">
   <img class="logo big" src="logo.png" alt="Family Vault" style="margin-bottom:14px">
   <b style="font-size:20px;color:#fff">Sign in</b>
@@ -216,6 +406,7 @@ html.hidamt .sumbar i::after{font-size:min(12.5px,3.2vw)}
 
 <div id="funds">
   <div id="sync" class="sync hide" onclick="manualSync()">Showing saved entries · tap to refresh</div>
+  <div id="tot" class="tot2"><span class="tl">Total savings</span><span class="tv"><small>A</small><b id="tv">$0</b></span></div>
   <div id="cards"></div>
   <div id="hrow">
     <h3 id="ht">Recent entries</h3>
@@ -228,7 +419,7 @@ html.hidamt .sumbar i::after{font-size:min(12.5px,3.2vw)}
       <button id="tb_x" onclick="openExport()" aria-label="Export"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg></button>
     </div>
   </div>
-  <div id="hist"><img id="fl" class="logo mono" src="logo-sm.png" alt="Family Vault"><div id="hlist"></div></div>
+  <div id="hist"><img id="fl" class="logo mono" src="logo-sm.png" alt="Family Vault"><p id="hint"></p><div id="hlist"></div></div>
 </div>
 
 <div id="form" class="hide">
@@ -426,6 +617,7 @@ let ients=[],iproj=[],ifilter=null,istore=null,itype='Investment';
 const PCOL=['gold','savings','emergency','travel','violet'];
 const ITYPES=[['Investment','Investment'],['Profit Made','Profit'],['Reinvested Profit','Reinvested']];
 const $=id=>document.getElementById(id);
+const dollar=n=>(n<0?'-':'')+'A$'+Math.abs(n).toLocaleString('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2});
 const money=n=>'AUD '+n.toLocaleString('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fm=n=>Number(n).toLocaleString('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2});
 const num=v=>typeof v==='number'?v:(parseFloat(String(v==null?'':v).replace(/[^0-9.\-]/g,''))||0);
@@ -442,8 +634,18 @@ function tab(n){
   $('funds').classList.toggle('hide',n!==1);
   $('form').classList.toggle('hide',!(n===2&&app==='sav'));
   $('formI').classList.toggle('hide',!(n===2&&app==='inv'));
-  fitLayout();
+  navSync();if(n===2)try{prefill()}catch(e){}fitLayout();
 }
+function navSync(){
+  const add=sub===2,inv=app==='inv';
+  $('n1').classList.toggle('on',!add&&!inv);$('n2').classList.toggle('on',!add&&inv);$('nA').classList.toggle('on',add);
+  $('pt').textContent=add?(inv?'New investment':'New entry'):(inv?'Investments':'Savings');
+  $('pd').textContent=new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})+'';
+  $('sb').classList.toggle('hide',!inv||add);
+  $('addseg').classList.toggle('hide',!(add&&typeof role!=='undefined'&&role==='owner'));
+  $('as1').classList.toggle('on',!inv);$('as2').classList.toggle('on',inv);
+}
+function goAdd(a){if(a!==app)setApp(a);tab(2)}
 function setApp(a){
   app=a;
   $('m1').classList.toggle('on',a==='sav');$('m2').classList.toggle('on',a==='inv');
@@ -456,14 +658,19 @@ function setType(t){type=t;$('bi').className=t==='Income'?'on':'';$('bx').classN
 function balances(){const b={};SECTIONS.forEach(s=>b[s]=0);entries.forEach(e=>{if(e.section in b)b[e.section]+=e.type==='Income'?e.amount:-e.amount});return b}
 function render(){const c=$('cards'),st=c.scrollTop;app==='sav'?renderSav():renderInv();c.scrollTop=st;
   const sl=c.querySelector('.card.sel');if(sl){const cr=c.getBoundingClientRect(),r=sl.getBoundingClientRect();if(r.top<cr.top)c.scrollTop+=r.top-cr.top-4;else if(r.bottom>cr.bottom)c.scrollTop+=r.bottom-cr.bottom+4}}
+const SIC={gold:'<svg viewBox="0 0 24 24"><path d="M8.500 12.500l1.200-4.500h4.600l1.200 4.500z"/><path d="M2.800 19l1.300-4.500h5.800L11.200 19z"/><path d="M12.800 19l1.300-4.500h5.800l1.300 4.500z"/></svg>',savings:'<svg viewBox="0 0 24 24"><path d="M4 7.5h13a3 3 0 013 3V18a2 2 0 01-2 2H6a2 2 0 01-2-2V7.5z"/><path d="M4 7.5L15 4v3.5M16 14h2.5"/></svg>',emergency:'<svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>',travel:'<svg viewBox="0 0 24 24"><path d="M21 4L3 11l7 3 3 7 8-17z"/></svg>',star:'<svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3z"/></svg>'};
+function withMonths(list,fn){let out='',cur='',sum=0,buf='';
+  const flush=()=>{if(cur){const[y,m]=cur.split('-').map(Number);out+=`<div class="mh2"><span>${new Date(y,m-1,1).toLocaleDateString('en-AU',{month:'long',year:'numeric'})}</span><span class="mv">${sum>=0?'+':'\u2212'}A$${fm(Math.abs(sum))}</span></div>`+buf}};
+  list.forEach(e=>{const k=String(e.date).slice(0,7);if(k!==cur){flush();cur=k;sum=0;buf=''}sum+=e.type==='Income'?e.amount:-e.amount;buf+=fn(e)});flush();return out}
 function renderSav(){
-  const b=balances();
-  $('cards').innerHTML=SECTIONS.map(s=>`<button class="card ${secCls(s)} ${filter===s?'sel':''}" onclick="toggle(this.dataset.s)" data-s="${esc(s)}"><span>${s}</span><span class="amt">${money(b[s])}</span></button>`).join('');
+  const b=balances();const sumB=SECTIONS.reduce((a,k)=>a+b[k],0),posB=SECTIONS.reduce((a,k)=>a+Math.max(0,b[k]),0);
+  $('cards').classList.toggle('dense',SECTIONS.length>=4);$('tot').style.display='';$('tv').textContent=dollar(sumB);
+  $('cards').innerHTML=SECTIONS.map(s=>`<button class="card ${secCls(s)} ${filter===s?'sel':''}" onclick="toggle(this.dataset.s)" data-s="${esc(s)}"><span class="cl"><span class="ci">${SIC[secCls(s)]||SIC.star}</span><em>${esc(s)}</em></span><span class="cv"><span class="cu">A</span><span class="amt">${dollar(b[s])}</span></span><span class="bar"><i style="width:${posB>0?Math.round(Math.max(0,b[s])/posB*100):0}%"></i></span></button>`).join('');
   const list=savList();
   $('ht').style.display='';
   if(!savMode()){$('ht').textContent='Tap a fund for history';$('hlist').innerHTML='';fitLayout();return}
   $('ht').textContent=(filter&&!q&&!dActive())?filter+' history'+(role==='owner'?' · tap to edit':''):(filter||'All funds')+' · '+list.length+(list.length===1?' entry':' entries')+(dActive()?' · '+dateLabel():'');
-  $('hlist').innerHTML=list.length?list.map(e=>`<div class="e ${secCls(e.section)}"${role==='owner'?` onclick="openEdit('${e.id}')" style="cursor:pointer"`:''}><div><span class="t1">${e.section}${e.desc?' · '+esc(e.desc):''}</span><small>${fdate(e.date)}</small></div><div><span class="${e.type==='Income'?'inc':'exp'}">${e.type==='Income'?'+':'−'}${e.amount.toFixed(2)}</span></div></div>`).join(''):'<div class="empty">'+((q||dActive())?'No matching entries.':'No entries for this fund yet.')+'</div>';
+  $('hlist').innerHTML=list.length?withMonths(list,e=>`<div class="e ${secCls(e.section)}"${role==='owner'?` onclick="openEdit('${e.id}')" style="cursor:pointer"`:''}><div><span class="t1"><b class="ar ${e.type==='Income'?'up':'dn'}">${e.type==='Income'?'↑':'↓'}</b>${e.section}${e.desc?' · '+esc(e.desc):''}</span><small>${fdate(e.date)}</small></div><div><span class="${e.type==='Income'?'inc':'exp'}">${e.type==='Income'?'+':'−'}A$${fm(e.amount)}</span></div></div>`):'<div class="empty">'+((q||dActive())?'No matching entries.':'No entries for this fund yet.')+'</div>';
   fitLayout();
 }
 function toggle(s){filter=filter===s?null:s;render();$('hist').scrollTop=0}
@@ -523,6 +730,7 @@ function aggregate(){
 }
 const kf=n=>n>=1e6?(n/1e6).toFixed(2).replace(/\.?0+$/,'')+'M':n>=1e4?(n/1e3).toFixed(1).replace(/\.0$/,'')+'k':n>=1e3?(n/1e3).toFixed(2).replace(/\.?0+$/,'')+'k':String(Math.round(n*100)/100);
 function renderInv(){
+  $('tot').style.display='none';$('cards').classList.remove('dense');
   $('ht').style.display='';
   if(!IAPI){
     $('cards').innerHTML='<div class="empty">Investments sheet not set up yet.<br>Add INV_SHEET_ID to config.js</div>';
@@ -542,7 +750,7 @@ function renderInv(){
   $('hlist').innerHTML=list.length?list.map(e=>{
     const k=e.type==='Profit Made'?['inc','+']:e.type==='Reinvested Profit'?['rei','↻ ']:['ivv',''];
     const sub2=fdate(e.date)+(e.comments?' · '+esc(e.comments):'')+(e.type==='Reinvested Profit'&&e.src?' · from '+esc(shortName(e.src)):'');
-    return `<div class="e ${cls}"${role==='owner'?` onclick="openIEdit('${esc(e.id)}')" style="cursor:pointer"`:''}><div><span class="t1">${esc(e.desc||e.section)}</span><small>${sub2}</small></div><div><span class="${k[0]}">${k[1]}${fm(e.amount)}</span></div></div>`}).join(''):'<div class="empty">No entries for this project yet.</div>';
+    return `<div class="e ${cls}"${role==='owner'?` onclick="openIEdit('${esc(e.id)}')" style="cursor:pointer"`:''}><div><span class="t1">${esc(e.desc||e.section)}</span><small>${sub2}</small></div><div><span class="${k[0]}">${k[1]}A$${fm(e.amount)}</span></div></div>`}).join(''):'<div class="empty">No entries for this project yet.</div>';
   fitLayout();
 }
 function toggleP(i){const n=iproj[i]&&iproj[i].name;ifilter=ifilter===n?null:n;renderInv();$('hist').scrollTop=0}
@@ -1066,11 +1274,12 @@ function applyRole(){
   setBadges();fillSections();fillProj();updateTools();
   $('mode').className='';$('mode').onclick=null;
   $('mode').textContent=role==='owner'?'':'View only';
-  $('t2').classList.toggle('hide',role!=='owner');
+  $('t2').classList.toggle('hide',role!=='owner');$('nA').classList.toggle('hide',role!=='owner');$('n2').classList.toggle('hide',!invAllowed());
   $('st').classList.toggle('hide',role!=='owner');
   $('m2').classList.toggle('hide',!invAllowed());
   if(!invAllowed()&&app==='inv')setApp('sav');
   if(role!=='owner'&&sub===2)tab(1);
+  navSync();
 }
 function errText(e,pre){const m=(e&&e.message)||'try again';return /expired/i.test(m)?'':((pre||'Could not load')+': '+m+' · tap to retry')}
 async function manualSync(){
@@ -1125,7 +1334,7 @@ function boot(){
 function reserve(){
   const pad=parseFloat(getComputedStyle(document.body).paddingBottom)||0;
   const standalone=navigator.standalone||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches);
-  return pad+(standalone?4:50);
+  return pad+4;
 }
 const LV=[[10,8,14,12,16],[9,7,13.5,11.5,15],[8,6,13,11,14],[7,5,12.5,10.5,13],[6,4,12,10,12],[5,3,11.5,9.5,11],[4,3,11,9,10]];
 function setLevel(i){
@@ -1166,7 +1375,7 @@ function fitHist(){
   const av=avail();
   let kk=k;
   while(kk>2&&need(kk)>av)kk--;
-  if(r.length>kk)h.style.maxHeight=need(kk)+'px';
+  if(r.length>kk)h.style.maxHeight=Math.min(need(kk),Math.max(av,90))+'px';
   else if(need(kk)>av)h.style.maxHeight=Math.max(av,90)+'px';
 }
 function fitLogo(){
@@ -1176,10 +1385,26 @@ function fitLogo(){
     g.style.display='';g.style.height='130px';
     const top=g.getBoundingClientRect().top+window.scrollY;
     const size=Math.min(130,VH()-reserve()-top-6);
-    if(size<44)g.style.display='none';else g.style.height=size+'px';
+    if(size<80)g.style.display='none';else g.style.height=size+'px';
   }
+  if(box){box.style.maxHeight='';box.style.overflowY='';const t=box.getBoundingClientRect().top+window.scrollY,av=VH()-reserve()-t;if(box.scrollHeight>av&&av>120){box.style.maxHeight=av+'px';box.style.overflowY='auto'}}
 }
-function fitLayout(){fitHist();fitLogo()}
+function fitLayout(){fitHist();fitLogo();fitNums()}
+function fitNums(){
+  if(document.documentElement.classList.contains('hidamt')){document.querySelectorAll('.sumbar i,#tv,#cards .amt,#cards .rt b').forEach(e=>e.style.fontSize='');return}
+  document.querySelectorAll('.sumbar i,#tv,#cards .amt,#cards .rt b').forEach(el=>{
+    el.style.fontSize='';const box=el.closest('.sumbar span,.tot2,.card');if(!box||!box.clientWidth)return;
+    const cs=getComputedStyle(box);let avail=box.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
+    if(el.classList.contains('amt')||el.id==='tv'){const sib=el.parentElement.firstElementChild;if(sib&&sib!==el)avail-=sib.getBoundingClientRect().width+12;const lab=box.querySelector('.cl,.tl');if(lab&&box.classList.contains('tot2'))avail-=lab.getBoundingClientRect().width+12;if(box.classList.contains('card')&&box.parentElement.classList.contains('dense'))avail-=box.querySelector('.cl').getBoundingClientRect().width+10}
+    if(el.classList.contains('amt')&&!box.parentElement.classList.contains('dense'))avail=box.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight)-60;
+    if(el.matches('.rt b')){const cn=box.querySelector('.cn');avail=box.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight)-Math.min(cn.scrollWidth,box.clientWidth*.42)-10}
+    let fs=parseFloat(getComputedStyle(el).fontSize);
+    while(el.getBoundingClientRect().width>avail&&fs>9){fs-=.5;el.style.fontSize=fs+'px'}
+  });
+}
+new MutationObserver(()=>fitNums()).observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+window.addEventListener('resize',()=>fitNums());
+
 let baseH=0;
 const typing=()=>{const a=document.activeElement;return !!(a&&/^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName))};
 function VH(){if(!baseH||!typing())baseH=window.innerHeight;return baseH}
@@ -1189,6 +1414,13 @@ window.addEventListener('orientationchange',()=>setTimeout(()=>{baseH=0;fitLayou
 window.addEventListener('load',()=>setTimeout(fitLayout,100));
 ['fl'].forEach(i=>{const e=document.getElementById(i);if(e)e.addEventListener('load',fitLayout)});
 
+function prefill(){const L=k=>{try{return localStorage.getItem(k)}catch(e){return null}};
+  const el=app==='sav'?$('section'):$('i_proj');if(el.value)return;
+  const v=app==='sav'?(filter||L('fv_ls')):(ifilter||L('fv_lp'));
+  if(v&&[...el.options].some(o=>o.value===v))el.value=v}
+{const _s=save,_i=saveI;
+ save=function(){try{const v=$('section').value;if(v)localStorage.setItem('fv_ls',v)}catch(e){}const r=_s.apply(this,arguments);setTimeout(()=>{if(app==='sav'&&sub===2)prefill()},900);return r};
+ saveI=function(){try{const v=$('i_proj').value;if(v&&v!=='__new__')localStorage.setItem('fv_lp',v)}catch(e){}const r=_i.apply(this,arguments);setTimeout(()=>{if(app==='inv'&&sub===2)prefill()},900);return r}}
 function init(){
   $('i_proj').addEventListener('change',onProjPick);
   $('sq').addEventListener('input',e=>{q=e.target.value;render()});
