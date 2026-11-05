@@ -446,6 +446,9 @@ header{margin-bottom:8px;padding-bottom:8px}
 #ptitle{margin-bottom:6px}
 .tot2{margin-bottom:6px}
 .sumbar{margin-bottom:6px}
+/* v14g: push the top bar down one row, clear of the status bar */
+.top{padding-top:calc(env(safe-area-inset-top,0px) + 30px)}
+@media (max-height:700px){.top{padding-top:calc(env(safe-area-inset-top,0px) + 24px)}}
 #hrow{margin:6px 4px 5px}
 </style>
 </head>
