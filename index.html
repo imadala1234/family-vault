@@ -522,6 +522,26 @@ html[data-theme="light"] .bnav button.on{background:rgba(79,125,230,.14)}
 html[data-theme="light"] .bnav button.on span{color:#16233f}
 html[data-theme="light"] .tb button,html[data-theme="light"] .tbx,html[data-theme="light"] .pb{background:#ffffff;color:#16233f}
 html[data-theme="light"] .cryempty{background:#ffffff}
+
+/* v18: crypto holdings */
+.ctot{padding:18px;border-radius:20px;border:1.5px solid rgba(242,166,90,.7);background:linear-gradient(135deg,rgba(242,166,90,.28),rgba(12,20,42,.88) 85%);margin-bottom:12px}
+.ctot span{display:block;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.ctot b{display:block;font-size:30px;margin:4px 0;color:#fff}
+.ctot small{color:var(--mut);font-size:12px}
+.crow{display:flex;align-items:center;gap:10px;padding:12px 14px;margin-bottom:8px;border-radius:16px;border:1.5px solid rgba(242,166,90,.45);background:rgba(255,255,255,.04)}
+.crow .cn{flex:1;min-width:0}
+.crow .cn b{display:block;color:#fff;font-size:15px}
+.crow .cn span{color:var(--mut);font-size:12px}
+.crow .cv2{font-weight:800;color:#fff;font-size:15px}
+.cdel{border:0;background:none;color:var(--mut);font-size:16px;padding:4px 6px}
+.cadd{margin-top:16px}
+.cadd input{width:100%;box-sizing:border-box;padding:12px 14px;margin-bottom:8px;border-radius:14px;border:1.5px solid rgba(120,150,230,.55);background:rgba(255,255,255,.06);color:#fff;font-size:16px}
+.cbtn{width:100%;padding:13px;margin-bottom:8px;border-radius:14px;border:0;background:#4f7de6;color:#fff;font-weight:800;font-size:16px}
+.cbtn.ghost{background:rgba(255,255,255,.08);border:1.5px solid rgba(120,150,230,.55)}
+.cmsg{color:#f2a65a;font-size:13px;min-height:18px;margin:4px 0 0}
+html[data-theme="light"] .ctot b,html[data-theme="light"] .crow .cn b,html[data-theme="light"] .crow .cv2{color:#16233f}
+html[data-theme="light"] .crow{background:#ffffff}
+html[data-theme="light"] .cadd input{background:#ffffff;color:#16233f}
 </style>
 </head>
 <body class="locked">
@@ -560,7 +580,16 @@ html[data-theme="light"] .cryempty{background:#ffffff}
   <div class="seg3" id="themeSeg"><button data-t="light" onclick="setTheme('light')">Light</button><button data-t="dark" onclick="setTheme('dark')">Dark</button><button data-t="auto" onclick="setTheme('auto')">Auto</button></div>
 </div>
 <div id="pgCry" class="pg">
-  <div class="cryempty"><b>Crypto</b><p>This page is ready. Tell me what you want to track here.</p></div>
+  <div id="cTop"></div>
+  <div id="cList"></div>
+  <div class="cadd">
+    <p class="pgh">Add a coin</p>
+    <input id="cSym" placeholder="Coin name or symbol, e.g. Bitcoin or BTC" autocomplete="off" autocapitalize="off">
+    <input id="cQty" type="number" step="any" min="0" placeholder="How many coins you hold" inputmode="decimal">
+    <button class="cbtn" onclick="cryAdd()">Add coin</button>
+    <button class="cbtn ghost" onclick="renderCrypto()">Refresh prices</button>
+    <p id="cMsg" class="cmsg"></p>
+  </div>
 </div>
 <div id="auth" class="panel">
   <img class="logo big" src="logo.png" alt="Family Vault" style="margin-bottom:14px">
@@ -814,8 +843,55 @@ function navSync(){
 function goAdd(a){if(a!==app)setApp(a);tab(2)}
 let lastApp='sav';
 function goTool(t){setApp(lastApp);({search:openSearch,filter:openFilter,summary:openSummary,export:openExport})[t]()}
+const CG='https://api.coingecko.com/api/v3';
+const audNum=new Intl.NumberFormat('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2});
+const audFmt={format:n=>'A$'+audNum.format(n)};
+function escH(x){return String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function cryLoad(){try{return JSON.parse(localStorage.getItem('fv_crypto')||'[]')}catch(e){return []}}
+function crySave(h){try{localStorage.setItem('fv_crypto',JSON.stringify(h))}catch(e){}}
+function cryCache(){try{return JSON.parse(localStorage.getItem('fv_cprice')||'null')||{p:{},at:0}}catch(e){return {p:{},at:0}}}
+function cryMsg(t){const m=$('cMsg');if(m)m.textContent=t||''}
+function cryDraw(h,prices,at,msg){
+  const total=h.reduce((s,c)=>s+(prices[c.id]!=null?prices[c.id]*c.qty:0),0);
+  const when=at?'Prices in AUD at '+new Date(at).toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'}):'Live prices not loaded yet';
+  $('cTop').innerHTML=`<div class="ctot"><span>Crypto value</span><b class="amt">${audFmt.format(total)}</b><small>${escH(when)}${msg?' · '+escH(msg):''}</small></div>`;
+  $('cList').innerHTML=h.length?h.map(c=>{const pr=prices[c.id];return `<div class="crow"><div class="cn"><b>${escH(c.name)}</b><span>${escH(c.sym)} · ${escH(c.qty)} held${pr!=null?' · '+audFmt.format(pr)+' each':''}</span></div><div class="cv2 amt">${pr!=null?audFmt.format(pr*c.qty):'—'}</div><button class="cdel" onclick="cryRemove('${escH(c.id)}')" aria-label="Remove coin">✕</button></div>`}).join(''):'<p class="pgh">No coins yet. Add one below.</p>';
+}
+async function renderCrypto(){
+  const h=cryLoad(),c=cryCache();
+  cryDraw(h,c.p,c.at,'');
+  if(!h.length)return;
+  const ids=h.map(x=>x.id);
+  const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),8000);
+  try{
+    const r=await fetch(`${CG}/simple/price?ids=${encodeURIComponent(ids.join(','))}&vs_currencies=aud`,{signal:ctl.signal});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const j=await r.json(),p={};ids.forEach(id=>{if(j[id]&&j[id].aud!=null)p[id]=j[id].aud});
+    const at=Date.now();try{localStorage.setItem('fv_cprice',JSON.stringify({p,at}))}catch(e){}
+    cryDraw(h,p,at,'');
+  }catch(e){cryDraw(h,c.p,c.at,'could not load live prices, showing last saved')}
+  finally{clearTimeout(t)}
+}
+async function cryAdd(){
+  const q=($('cSym').value||'').trim(),qty=parseFloat($('cQty').value);
+  if(!q){cryMsg('Enter a coin name or symbol');return}
+  if(!(qty>0)){cryMsg('Enter how many coins you hold');return}
+  cryMsg('Finding coin…');
+  try{
+    const r=await fetch(`${CG}/search?query=${encodeURIComponent(q)}`);
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    const coins=(await r.json()).coins||[],ql=q.toLowerCase();
+    const pick=coins.find(c=>c.symbol.toLowerCase()===ql)||coins.find(c=>c.id===ql||c.name.toLowerCase()===ql)||coins[0];
+    if(!pick){cryMsg('No coin found for "'+q+'"');return}
+    const h=cryLoad(),ex=h.find(c=>c.id===pick.id);
+    if(ex)ex.qty=qty;else h.push({id:pick.id,name:pick.name,sym:pick.symbol.toUpperCase(),qty});
+    crySave(h);$('cSym').value='';$('cQty').value='';cryMsg('');
+    renderCrypto();
+  }catch(e){cryMsg('Could not look up that coin, check your connection')}
+}
+function cryRemove(id){crySave(cryLoad().filter(c=>c.id!==id));renderCrypto()}
 function setApp(a){
-  app=a;if(a==='sav'||a==='inv')lastApp=a;
+  app=a;if(a==='cry')renderCrypto();if(a==='sav'||a==='inv')lastApp=a;
   document.documentElement.dataset.pg=(a==='set'||a==='cry')?a:'data';
   $('m1').classList.toggle('on',a==='sav');$('m2').classList.toggle('on',a==='inv');
   $('t1').textContent=a==='sav'?'Stack':'Build';if(!$('sq').classList.contains('hide'))closeSearch();updateTools();$('sb').classList.toggle('hide',a!=='inv');
