@@ -275,13 +275,13 @@ input:focus,select:focus{outline:2px solid #4f7de6}
 .bnav .nsav span,.bnav .ninv span{color:var(--mut)}
 .bnav button.on{background:rgba(120,150,220,.16)}
 .bnav button.on span{color:#fff;font-weight:800}
-.bnav .nadd{background:none!important}
-.bnav .nadd i{position:absolute;left:50%;top:-24px;margin:0 0 0 -29px;width:58px;height:58px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:radial-gradient(circle at 30% 25%,#1c2d62,#0b1330 70%);box-shadow:0 0 0 1.5px rgba(139,160,255,.55),0 0 22px rgba(107,140,255,.55),inset 0 0 14px rgba(107,140,255,.35)}
-.bnav .nadd i::before{content:"";position:absolute;inset:-3px;border-radius:50%;background:conic-gradient(from 200deg,#7aa8ff,#8b6cff,#ff7ab8,#e8b84a,#7aa8ff);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2.5px),#000 calc(100% - 2px));mask:radial-gradient(farthest-side,transparent calc(100% - 2.5px),#000 calc(100% - 2px))}
-.bnav .nadd svg{position:relative;width:27px;height:27px;stroke:#d6e4ff;stroke-width:2.8;filter:drop-shadow(0 0 6px rgba(122,168,255,.95))}
-.bnav .nadd.on i{transform:rotate(45deg);box-shadow:0 0 0 1.5px rgba(160,140,255,.8),0 0 30px rgba(139,108,255,.8),inset 0 0 16px rgba(139,108,255,.5)}
+.nadd{background:none!important}
+.nadd i{position:absolute;left:50%;top:-24px;margin:0 0 0 -29px;width:58px;height:58px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:radial-gradient(circle at 30% 25%,#1c2d62,#0b1330 70%);box-shadow:0 0 0 1.5px rgba(139,160,255,.55),0 0 22px rgba(107,140,255,.55),inset 0 0 14px rgba(107,140,255,.35)}
+.nadd i::before{content:"";position:absolute;inset:-3px;border-radius:50%;background:conic-gradient(from 200deg,#7aa8ff,#8b6cff,#ff7ab8,#e8b84a,#7aa8ff);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 2.5px),#000 calc(100% - 2px));mask:radial-gradient(farthest-side,transparent calc(100% - 2.5px),#000 calc(100% - 2px))}
+.nadd svg{position:relative;width:27px;height:27px;stroke:#d6e4ff;stroke-width:2.8;filter:drop-shadow(0 0 6px rgba(122,168,255,.95))}
+.nadd.on i{transform:rotate(45deg);box-shadow:0 0 0 1.5px rgba(160,140,255,.8),0 0 30px rgba(139,108,255,.8),inset 0 0 16px rgba(139,108,255,.5)}
 .locked .bnav,.locked #ptitle,.locked #addseg{display:none}
-@media (max-height:700px){.top{padding-top:calc(env(safe-area-inset-top,0px) + 14px)}header{margin-bottom:6px;padding-bottom:6px}h1{font-size:20px}#ptitle h2{font-size:25px}#ptitle p{font-size:13px;margin-top:3px}#ptitle{margin-bottom:6px}:root{--navh:58px;--r:22px}.pb{width:34px;height:34px}.bnav .nadd i{width:50px;height:50px;margin-left:-25px;top:-18px}.card .amt{font-size:min(26px,7vw)}}
+@media (max-height:700px){.top{padding-top:calc(env(safe-area-inset-top,0px) + 14px)}header{margin-bottom:6px;padding-bottom:6px}h1{font-size:20px}#ptitle h2{font-size:25px}#ptitle p{font-size:13px;margin-top:3px}#ptitle{margin-bottom:6px}:root{--navh:58px;--r:22px}.pb{width:34px;height:34px}.nadd i{width:50px;height:50px;margin-left:-25px;top:-18px}.card .amt{font-size:min(26px,7vw)}}
 
 /* solid background layer (works inside hosts that ignore html background) */
 html,body{background-color:#0a1226!important;color-scheme:dark}
@@ -436,9 +436,9 @@ body{padding-bottom:calc(max(4px,env(safe-area-inset-bottom,0px) - 14px) + var(-
 .mh2 .mv{height:11px;line-height:11px}
 html.hidamt .mh2 .mv::after{line-height:11px}
 .e,.e.gold,.e.savings,.e.emergency,.e.travel,.e.violet,.e.teal,.e.pink,.e.orange,.e.lime{padding:6px 12px!important;margin-bottom:5px!important}
-.bnav .nadd i{top:-16px;width:54px;height:54px;margin-left:-27px}
-.bnav .nadd svg{width:25px;height:25px}
-@media (max-height:700px){.bnav .nadd i{top:-14px;width:50px;height:50px;margin-left:-25px}}
+.nadd i{top:-16px;width:54px;height:54px;margin-left:-27px}
+.nadd svg{width:25px;height:25px}
+@media (max-height:700px){.nadd i{top:-14px;width:50px;height:50px;margin-left:-25px}}
 
 /* v14f: a little tighter at the top */
 .top{padding-top:calc(env(safe-area-inset-top,0px) + 6px)}
@@ -455,6 +455,17 @@ html.lk #splash{display:none}
 .top{padding-top:calc(env(safe-area-inset-top,0px) + 30px)}
 @media (max-height:700px){.top{padding-top:calc(env(safe-area-inset-top,0px) + 24px)}}
 #hrow{margin:6px 4px 5px}
+
+/* v15: savings tiles (2x2 squares), filtered total, floating + */
+#cards.sav-tiles{display:grid!important;grid-template-columns:1fr 1fr;gap:10px;padding:10px 0 0;margin:0}
+#cards.sav-tiles .card:not(.p){display:flex!important;flex-direction:column!important;justify-content:space-between!important;align-items:flex-start!important;grid-template-columns:none!important;aspect-ratio:1/1;width:auto;min-width:0;margin:0!important;padding:14px!important;border-radius:22px!important}
+#cards.sav-tiles .card:not(.p) .cv,#cards.sav-tiles .card:not(.p) .bar{display:none!important}
+#cards.sav-tiles .card:not(.p) .cl{flex-direction:column;align-items:flex-start;gap:14px;font-size:17px}
+#cards.sav-tiles .card:not(.p) .ci svg{width:36px;height:36px}
+.nadd{position:fixed;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + var(--navh) + 12px);z-index:31;width:58px;height:58px;padding:0;border:0;background:none;display:block}
+.nadd i{left:0!important;top:0!important;margin:0!important;width:100%!important;height:100%!important}
+@media (max-height:700px){.nadd{width:50px;height:50px}}
+.locked .nadd{display:none!important}
 </style>
 </head>
 <body class="locked">
@@ -477,9 +488,10 @@ html.lk #splash{display:none}
 </div>
 <nav class="bnav" id="bnav" aria-label="Main"><div>
 <button id="n1" class="nsav on" onclick="setApp('sav')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5h13a3 3 0 013 3V18a2 2 0 01-2 2H6a2 2 0 01-2-2V7.5z"/><path d="M4 7.5L15 4v3.5M16 14h2.5"/></svg><span>Savings</span></button>
-<button id="nA" class="nadd" onclick="tab(sub===2?1:2)" aria-label="Add entry"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></i></button>
+
 <button id="n2" class="ninv" onclick="setApp('inv')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg><span>Investments</span></button>
 </div></nav>
+<button id="nA" class="nadd" onclick="tab(sub===2?1:2)" aria-label="Add entry"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></i></button>
 <div id="auth" class="panel">
   <img class="logo big" src="logo.png" alt="Family Vault" style="margin-bottom:14px">
   <b style="font-size:20px;color:#fff">Sign in</b>
@@ -740,7 +752,7 @@ function setType(t){type=t;$('bi').className=t==='Income'?'on':'';$('bx').classN
 
 /* ---------- savings ---------- */
 function balances(){const b={};SECTIONS.forEach(s=>b[s]=0);entries.forEach(e=>{if(e.section in b)b[e.section]+=e.type==='Income'?e.amount:-e.amount});return b}
-function render(){const c=$('cards'),st=c.scrollTop;app==='sav'?renderSav():renderInv();c.scrollTop=st;
+function render(){const c=$('cards'),st=c.scrollTop;c.classList.toggle('sav-tiles',app==='sav');app==='sav'?renderSav():renderInv();c.scrollTop=st;
   const sl=c.querySelector('.card.sel');if(sl){const cr=c.getBoundingClientRect(),r=sl.getBoundingClientRect();if(r.top<cr.top)c.scrollTop+=r.top-cr.top-4;else if(r.bottom>cr.bottom)c.scrollTop+=r.bottom-cr.bottom+4}}
 const SIC={gold:'<svg viewBox="0 0 24 24"><path d="M8.500 12.500l1.200-4.500h4.600l1.200 4.500z"/><path d="M2.800 19l1.300-4.500h5.800L11.200 19z"/><path d="M12.800 19l1.300-4.500h5.800l1.300 4.500z"/></svg>',savings:'<svg viewBox="0 0 24 24"><path d="M4 7.5h13a3 3 0 013 3V18a2 2 0 01-2 2H6a2 2 0 01-2-2V7.5z"/><path d="M4 7.5L15 4v3.5M16 14h2.5"/></svg>',emergency:'<svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>',travel:'<svg viewBox="0 0 24 24"><path d="M21 4L3 11l7 3 3 7 8-17z"/></svg>',star:'<svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3z"/></svg>'};
 function withMonths(list,fn){let out='',cur='',sum=0,buf='';
@@ -748,8 +760,9 @@ function withMonths(list,fn){let out='',cur='',sum=0,buf='';
   list.forEach(e=>{const k=String(e.date).slice(0,7);if(k!==cur){flush();cur=k;sum=0;buf=''}sum+=e.type==='Income'?e.amount:-e.amount;buf+=fn(e)});flush();return out}
 function renderSav(){
   const b=balances();const sumB=SECTIONS.reduce((a,k)=>a+b[k],0),posB=SECTIONS.reduce((a,k)=>a+Math.max(0,b[k]),0);
-  $('cards').classList.toggle('dense',SECTIONS.length>=4);$('tot').style.display='';$('tv').textContent=dollar(sumB);
-  $('cards').innerHTML=SECTIONS.map(s=>`<button class="card ${secCls(s)} ${filter===s?'sel':''}" onclick="toggle(this.dataset.s)" data-s="${esc(s)}"><span class="cl"><span class="ci">${SIC[secCls(s)]||SIC.star}</span><em>${esc(s)}</em></span><span class="cv"><span class="cu">A</span><span class="amt">${dollar(b[s])}</span></span><span class="bar"><i style="width:${posB>0?Math.round(Math.max(0,b[s])/posB*100):0}%"></i></span></button>`).join('');
+  $('cards').classList.toggle('dense',SECTIONS.length>=4);$('tot').style.display='';const f=filter&&SECTIONS.includes(filter)?filter:null;$('tv').textContent=dollar(f?b[f]:sumB);$('tot').querySelector('.tl').textContent=f||'Total savings';
+  $('cards').innerHTML=SECTIONS.map(s=>`<button class="card ${secCls(s)} ${filter===s?'sel':''}" onclick="toggle(this.dataset.s)" data-s="${esc(s)}"><span class="cl"><span class="ci">${SIC[secCls(s)]||SIC.star}</span><em>${esc(s)}</em></span></button>`).join('');
+  const fs=$('cards').querySelector('.card.sel'),tot=$('tot');if(f&&fs){const cs=getComputedStyle(fs);tot.style.backgroundImage=cs.backgroundImage;tot.style.borderColor=cs.borderTopColor}else{tot.style.backgroundImage='';tot.style.borderColor=''}
   const list=savList();
   $('ht').style.display='';
   if(!savMode()){$('ht').textContent='Tap a fund for history';$('hlist').innerHTML='';fitLayout();return}
