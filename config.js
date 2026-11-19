@@ -5,6 +5,8 @@ window.APP_CONFIG = {
   INV_SHEET_ID: '1zfTFvEPLKNQjIbYjKqRygj6GmjHhQDd4n0NE7ax4s4o',                      // Investments sheet
   INV_TAB_ENTRIES: 'Entries',                                      // tab names in the Investments sheet
   INV_TAB_SECTIONS: 'Sections',
+  CRY_SHEET_ID: '',                                                // Crypto sheet (leave blank to create one in your Drive on first save)
+  CRY_TAB: 'Holdings',
   VIEWERS_SEE_INVESTMENTS: true,                                   // false = wife sees Savings only
   OWNER: 'sm466991234@gmail.com',       // full access
   VIEWERS: ['deepthimadala7@gmail.com']      // view-only
