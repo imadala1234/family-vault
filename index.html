@@ -545,13 +545,14 @@ html[data-theme="light"] .cadd input{background:#ffffff;color:#16233f}
 
 /* v19: crypto tiles like savings, add via + */
 #pgCry.hide{display:none!important}
-.ctiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 0 0}
-.ctile{position:relative;height:118px;box-sizing:border-box;border-radius:22px;border:1.5px solid;padding:8px 10px;overflow:hidden}
-.ctile .csym{position:absolute;top:8px;left:10px;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:#fff;letter-spacing:.06em}
-.ctile .csym .cdel{padding:0 2px;font-size:11px}
-.ctile .cright{position:absolute;top:8px;right:10px;text-align:right;max-width:60%}
-.ctile .cright b{display:block;font-size:12px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ctile .cright span{display:block;font-size:11px;color:var(--mut);white-space:nowrap}
+.ctiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 2px 4px;max-height:calc(3*118px + 2*10px + 8px);overflow-y:auto;-webkit-overflow-scrolling:touch}
+.ctile{position:relative;height:118px;box-sizing:border-box;border-radius:22px;border:1.5px solid;padding:8px 10px;overflow:hidden;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.ctile .csym{position:absolute;top:9px;left:10px;max-width:55%}
+.ctile .cright{position:absolute;top:9px;right:10px;text-align:right;max-width:45%}
+.ctile .csym span,.ctile .cright span{display:block;font-size:11px;font-weight:700;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctile .csym .cname,.ctile .cright .cname{font-size:14px;font-weight:800;color:#fff;letter-spacing:.01em;margin-bottom:2px}
+.ctile .cright .cname{text-align:right}
+.cdelbtn{background:transparent!important;color:#ff6b6b!important;border:1px solid rgba(255,107,107,.5)!important;margin-top:8px}
 .ctile .clogo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
 .ctile .clogo img{width:40px;height:40px;border-radius:50%;display:block}
 .ctile .clogo span{display:flex;width:40px;height:40px;border-radius:50%;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;background:rgba(255,255,255,.12)}
@@ -563,7 +564,7 @@ html[data-theme="light"] .cadd input{background:#ffffff;color:#16233f}
 .ctile .cbot .cval.down{color:#ff6b6b}
 html[data-theme="light"] .ctile .cbot .cval.up{color:#1f8a4c}
 html[data-theme="light"] .ctile .cbot .cval.down{color:#c8323c}
-html[data-theme="light"] .ctile .csym,html[data-theme="light"] .ctile .cright b,html[data-theme="light"] .ctile .cbot span{color:#16233f}
+html[data-theme="light"] .ctile .csym .cname,html[data-theme="light"] .ctile .cright .cname,html[data-theme="light"] .ctile .cbot span{color:#16233f}
 html[data-theme="light"] .ctile .cbot .cval.up{color:#1f8a4c}
 </style>
 </head>
@@ -608,12 +609,13 @@ html[data-theme="light"] .ctile .cbot .cval.up{color:#1f8a4c}
 </div>
 <div id="formC" class="hide">
   <div class="panel">
-    <div class="ph"><b>New crypto holding</b><span></span></div>
+    <div class="ph"><b id="cHead">New crypto holding</b><span></span></div>
     <div class="cadd">
       <input id="cSym" placeholder="Coin name or symbol, e.g. Bitcoin or BTC" autocomplete="off" autocapitalize="off">
       <input id="cQty" type="number" step="any" min="0" placeholder="How many coins you hold" inputmode="decimal">
       <input id="cInv" type="number" step="0.01" min="0" placeholder="Amount invested (A$)" inputmode="decimal">
-      <button class="cbtn" onclick="cryAdd()">Save coin</button>
+      <button class="cbtn" id="cSave" onclick="cryAdd()">Save coin</button>
+      <button class="cbtn cdelbtn hide" id="cDel" onclick="cryDelete()">Remove coin</button>
       <p id="cMsg" class="cmsg"></p>
     </div>
   </div>
@@ -851,7 +853,7 @@ const bracket=s=>{const m=String(s).match(/\((.*)\)\s*$/);return m?m[1]:''};
 
 /* ---------- navigation ---------- */
 function tab(n){
-  sub=n;
+  sub=n;if(n===2&&!cryOpening)cryFormNew();
   $('t1').classList.toggle('on',n===1);$('t2').classList.toggle('on',n===2);
   $('funds').classList.toggle('hide',n!==1);
   $('form').classList.toggle('hide',!(n===2&&app==='sav'));$('formC').classList.toggle('hide',!(n===2&&app==='cry'));$('pgCry').classList.toggle('hide',n===2);
@@ -861,7 +863,7 @@ function tab(n){
 function navSync(){
   const add=sub===2,inv=app==='inv';
   $('n1').classList.toggle('on',!add&&app==='sav');$('n2').classList.toggle('on',!add&&inv);$('n3').classList.toggle('on',!add&&app==='cry');$('n4').classList.toggle('on',!add&&app==='set');$('nA').classList.toggle('on',add);
-  $('pt').textContent=add?(app==='cry'?'New crypto':inv?'New investment':'New entry'):app==='set'?'Settings':app==='cry'?'Crypto':(inv?'Investments':'Savings');
+  $('pt').textContent=add?(app==='cry'?(cryEditId?'Edit crypto':'New crypto'):inv?'New investment':'New entry'):app==='set'?'Settings':app==='cry'?'Crypto':(inv?'Investments':'Savings');
   $('pd').textContent=new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})+'';
   $('sb').classList.toggle('hide',!inv||add);
   $('addseg').classList.toggle('hide',!(add&&typeof role!=='undefined'&&role==='owner'));
@@ -871,6 +873,7 @@ function goAdd(a){if(a!==app)setApp(a);tab(2)}
 let lastApp='sav';
 function goTool(t){setApp(lastApp);({search:openSearch,filter:openFilter,summary:openSummary,export:openExport})[t]()}
 const CG='https://api.coingecko.com/api/v3';
+let cryEditId=null,cryOpening=false;
 const audNum=new Intl.NumberFormat('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2});
 const audFmt={format:n=>'A$'+audNum.format(n)};
 function escH(x){return String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -893,9 +896,9 @@ function cryDraw(h,prices,at,msg){
     const pr=prices[c.id],val=pr!=null?pr*c.qty:null,inv=c.invested;
     const cls=val==null||inv==null?'':(val>inv?'up':'down');
     const col=c.color||cryColor(c);
-    return `<div class="ctile" style="border-color:${escH(col)};background:linear-gradient(135deg,${hexA(col,.30)},rgba(12,20,42,.88) 85%)">`+
-      `<div class="csym"><span>${escH(c.sym)}</span></div>`+
-      `<div class="cright"><b>${escH(qtyFmt(c.qty))} ${escH(c.sym)}</b><span class="amt">${pr!=null?fmtTile(pr):'price n/a'}</span></div>`+
+    return `<div class="ctile" data-id="${escH(c.id)}" style="border-color:${escH(col)};background:linear-gradient(135deg,${hexA(col,.30)},rgba(12,20,42,.88) 85%)">`+
+      `<div class="csym"><span class="cname">${escH(c.name)}</span><span>${escH(qtyFmt(c.qty))} ${escH(c.sym)}</span></div>`+
+      `<div class="cright"><span class="cname">${escH(c.name)}</span><span class="amt">${pr!=null?fmtTile(pr):'price n/a'}</span></div>`+
       `<div class="clogo">${c.img?`<img src="${escH(c.img)}" alt="${escH(c.name)}" onerror="this.outerHTML='<span>${escH(c.sym)}</span>'">`:`<span>${escH(c.sym)}</span>`}</div>`+
       `<div class="cbot"><span><small>Invested</small><b class="amt">${inv!=null?fmtTile(inv):'—'}</b></span><span class="cval ${cls}"><small>Value</small><b class="amt">${val!=null?fmtTile(val):'—'}</b></span></div>`+
       `</div>`;
@@ -952,7 +955,46 @@ async function renderCrypto(){
   }catch(e){cryDraw(h,c.p,c.at,'could not load live prices, showing last saved')}
   finally{clearTimeout(t)}
 }
+function cryFormNew(){
+  cryEditId=null;$('cSym').disabled=false;$('cSym').value='';$('cQty').value='';$('cInv').value='';
+  cryMsg('');$('cDel').classList.add('hide');$('cSave').textContent='Save coin';$('cHead').textContent='New crypto holding';
+}
+function cryOpenEdit(id){
+  const c=cryLoad().find(x=>x.id===id);if(!c)return;
+  cryOpening=true;try{if(app!=='cry')setApp('cry');tab(2)}finally{cryOpening=false}
+  cryEditId=id;$('cSym').value=c.name;$('cSym').disabled=true;$('cQty').value=c.qty;
+  $('cInv').value=c.invested==null?'':c.invested;cryMsg('');
+  $('cDel').classList.remove('hide');$('cSave').textContent='Save changes';$('cHead').textContent='Edit '+c.sym;navSync();
+}
+async function cryDelete(){
+  if(!cryEditId)return;
+  if(!confirm('Remove this coin from your crypto list?'))return;
+  const id=cryEditId;tab(1);await cryRemove(id);
+}
+let cryPressT=null,cryPressXY=null;
+function cryPressEnd(){clearTimeout(cryPressT);cryPressT=null}
+document.addEventListener('pointerdown',e=>{
+  const t=e.target.closest&&e.target.closest('#cList .ctile');if(!t)return;
+  cryPressXY=[e.clientX,e.clientY];cryPressEnd();
+  cryPressT=setTimeout(()=>{cryPressT=null;if(navigator.vibrate)navigator.vibrate(10);cryOpenEdit(t.dataset.id)},500);
+});
+document.addEventListener('pointermove',e=>{
+  if(cryPressT&&cryPressXY&&Math.hypot(e.clientX-cryPressXY[0],e.clientY-cryPressXY[1])>10)cryPressEnd();
+});
+document.addEventListener('pointerup',cryPressEnd);
+document.addEventListener('pointercancel',cryPressEnd);
+document.addEventListener('contextmenu',e=>{if(e.target.closest&&e.target.closest('#cList .ctile'))e.preventDefault()});
 async function cryAdd(){
+  if(cryEditId){
+    const qty=parseFloat($('cQty').value),inv=parseFloat($('cInv').value);
+    if(!(qty>0)){cryMsg('Enter how many coins you hold');return}
+    if(!(inv>=0)){cryMsg('Enter the amount you invested (A$)');return}
+    const h=cryLoad(),ex=h.find(c=>c.id===cryEditId);
+    if(!ex){cryMsg('That coin is no longer in your list');return}
+    ex.qty=qty;ex.invested=inv;
+    try{await cryPersist(h)}catch(e){crySyncMsg='Saved on this device. Drive sync failed: '+e.message}
+    tab(1);renderCrypto();return;
+  }
   const q=($('cSym').value||'').trim(),qty=parseFloat($('cQty').value);
   if(!q){cryMsg('Enter a coin name or symbol');return}
   if(!(qty>0)){cryMsg('Enter how many coins you hold');return}
