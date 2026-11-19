@@ -471,6 +471,27 @@ html.lk #splash{display:none}
 .nadd i{left:0!important;top:0!important;margin:0!important;width:100%!important;height:100%!important}
 @media (max-height:700px){.nadd{width:50px;height:50px}}
 .locked .nadd{display:none!important}
+
+/* v16: Crypto + Settings tabs, toolbar moved to Settings, tile icon/label layout */
+#tb{display:none!important}
+.pg{display:none}
+html[data-pg="set"] #pgSet,html[data-pg="cry"] #pgCry{display:block}
+html[data-pg="set"] #funds,html[data-pg="cry"] #funds,html[data-pg="set"] #mt,html[data-pg="cry"] #mt,html[data-pg="set"] #st,html[data-pg="cry"] #st,html[data-pg="set"] #sb,html[data-pg="cry"] #sb,html[data-pg="set"] #addseg,html[data-pg="cry"] #addseg,html[data-pg="set"] #nA,html[data-pg="cry"] #nA,html[data-pg="set"] #form,html[data-pg="cry"] #form,html[data-pg="set"] #formI,html[data-pg="cry"] #formI{display:none!important}
+.pg{padding:6px 2px}
+.pgh{margin:0 0 12px;color:var(--mut);font-size:13px;font-weight:700}
+.setrow{display:flex;align-items:center;justify-content:space-between;width:100%;padding:16px 18px;margin:0 0 10px;border-radius:18px;border:1.5px solid rgba(120,150,230,.55);background:linear-gradient(135deg,rgba(84,130,206,.30),rgba(12,20,42,.88) 85%);color:#fff;font-size:16px;font-weight:800;text-align:left}
+.setrow i{font-style:normal;font-size:24px;color:#9fb6e6}
+.cryempty{padding:28px 18px;border-radius:18px;border:1.5px dashed rgba(242,166,90,.7);text-align:center;color:var(--mut)}
+.cryempty b{display:block;color:#fff;font-size:18px;margin-bottom:6px}
+.cryempty p{margin:0;font-size:14px}
+.bnav button{font-size:12px}
+.bnav .ncry{color:#f2a65a}.bnav .nset{color:#c9d4f0}
+.bnav .ncry span,.bnav .nset span{color:var(--mut)}
+#cards.sav-tiles .card:not(.p){padding:10px!important}
+#cards.sav-tiles .card:not(.p) .cl{display:contents}
+#cards.sav-tiles .card:not(.p) .ci{align-self:center;display:flex}
+#cards.sav-tiles .card:not(.p) .ci svg{width:64px;height:64px;stroke-width:1.3}
+#cards.sav-tiles .card:not(.p) em{align-self:flex-start;margin-top:auto;font-size:13px;font-weight:700;line-height:1.1}
 </style>
 </head>
 <body class="locked">
@@ -495,8 +516,20 @@ html.lk #splash{display:none}
 <button id="n1" class="nsav on" onclick="setApp('sav')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5h13a3 3 0 013 3V18a2 2 0 01-2 2H6a2 2 0 01-2-2V7.5z"/><path d="M4 7.5L15 4v3.5M16 14h2.5"/></svg><span>Savings</span></button>
 
 <button id="n2" class="ninv" onclick="setApp('inv')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg><span>Investments</span></button>
+<button id="n3" class="ncry" onclick="setApp('cry')"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 8v8M12 7v1.5M12 15.5V17M9.5 8h2.5a2 2 0 010 4H9.5h3a2 2 0 010 4H9.5"/></svg><span>Crypto</span></button>
+<button id="n4" class="nset" onclick="setApp('set')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg><span>Settings</span></button>
 </div></nav>
 <button id="nA" class="nadd" onclick="tab(sub===2?1:2)" aria-label="Add entry"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></i></button>
+<div id="pgSet" class="pg">
+  <p class="pgh">Tools for Savings and Investments</p>
+  <button class="setrow" onclick="goTool('search')"><span>Search entries</span><i>&#8250;</i></button>
+  <button class="setrow" onclick="goTool('filter')"><span>Filter by date</span><i>&#8250;</i></button>
+  <button class="setrow" onclick="goTool('summary')"><span>Monthly summary</span><i>&#8250;</i></button>
+  <button class="setrow" onclick="goTool('export')"><span>Export &amp; reports</span><i>&#8250;</i></button>
+</div>
+<div id="pgCry" class="pg">
+  <div class="cryempty"><b>Crypto</b><p>This page is ready. Tell me what you want to track here.</p></div>
+</div>
 <div id="auth" class="panel">
   <img class="logo big" src="logo.png" alt="Family Vault" style="margin-bottom:14px">
   <b style="font-size:20px;color:#fff">Sign in</b>
@@ -739,16 +772,19 @@ function tab(n){
 }
 function navSync(){
   const add=sub===2,inv=app==='inv';
-  $('n1').classList.toggle('on',!add&&!inv);$('n2').classList.toggle('on',!add&&inv);$('nA').classList.toggle('on',add);
-  $('pt').textContent=add?(inv?'New investment':'New entry'):(inv?'Investments':'Savings');
+  $('n1').classList.toggle('on',!add&&app==='sav');$('n2').classList.toggle('on',!add&&inv);$('n3').classList.toggle('on',!add&&app==='cry');$('n4').classList.toggle('on',!add&&app==='set');$('nA').classList.toggle('on',add);
+  $('pt').textContent=add?(inv?'New investment':'New entry'):app==='set'?'Settings':app==='cry'?'Crypto':(inv?'Investments':'Savings');
   $('pd').textContent=new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})+'';
   $('sb').classList.toggle('hide',!inv||add);
   $('addseg').classList.toggle('hide',!(add&&typeof role!=='undefined'&&role==='owner'));
   $('as1').classList.toggle('on',!inv);$('as2').classList.toggle('on',inv);
 }
 function goAdd(a){if(a!==app)setApp(a);tab(2)}
+let lastApp='sav';
+function goTool(t){setApp(lastApp);({search:openSearch,filter:openFilter,summary:openSummary,export:openExport})[t]()}
 function setApp(a){
-  app=a;
+  app=a;if(a==='sav'||a==='inv')lastApp=a;
+  document.documentElement.dataset.pg=(a==='set'||a==='cry')?a:'data';
   $('m1').classList.toggle('on',a==='sav');$('m2').classList.toggle('on',a==='inv');
   $('t1').textContent=a==='sav'?'Stack':'Build';if(!$('sq').classList.contains('hide'))closeSearch();updateTools();$('sb').classList.toggle('hide',a!=='inv');
   $('cards').scrollTop=0;updateSync();render();tab(1);
@@ -757,7 +793,7 @@ function setType(t){type=t;$('bi').className=t==='Income'?'on':'';$('bx').classN
 
 /* ---------- savings ---------- */
 function balances(){const b={};SECTIONS.forEach(s=>b[s]=0);entries.forEach(e=>{if(e.section in b)b[e.section]+=e.type==='Income'?e.amount:-e.amount});return b}
-function render(){const c=$('cards'),st=c.scrollTop;c.classList.toggle('sav-tiles',app==='sav');app==='sav'?renderSav():renderInv();c.scrollTop=st;
+function render(){const c=$('cards'),st=c.scrollTop;c.classList.toggle('sav-tiles',app==='sav');app==='sav'?renderSav():app==='inv'?renderInv():null;c.scrollTop=st;
   const sl=c.querySelector('.card.sel');if(sl){const cr=c.getBoundingClientRect(),r=sl.getBoundingClientRect();if(r.top<cr.top)c.scrollTop+=r.top-cr.top-4;else if(r.bottom>cr.bottom)c.scrollTop+=r.bottom-cr.bottom+4}}
 const SIC={gold:'<svg viewBox="0 0 24 24"><path d="M8.500 12.500l1.200-4.500h4.600l1.200 4.500z"/><path d="M2.800 19l1.300-4.500h5.800L11.200 19z"/><path d="M12.800 19l1.300-4.500h5.800l1.300 4.500z"/></svg>',savings:'<svg viewBox="0 0 24 24"><path d="M4 7.5h13a3 3 0 013 3V18a2 2 0 01-2 2H6a2 2 0 01-2-2V7.5z"/><path d="M4 7.5L15 4v3.5M16 14h2.5"/></svg>',emergency:'<svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg>',travel:'<svg viewBox="0 0 24 24"><path d="M21 4L3 11l7 3 3 7 8-17z"/></svg>',star:'<svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3z"/></svg>'};
 function withMonths(list,fn){let out='',cur='',sum=0,buf='';
