@@ -458,7 +458,7 @@ html.lk #splash{display:none}
 
 /* v15: savings tiles (2x2 squares), filtered total, floating + */
 #cards.sav-tiles{display:grid!important;grid-template-columns:1fr 1fr;gap:10px;padding:10px 0 0;margin:0}
-#cards.sav-tiles .card:not(.p){display:flex!important;flex-direction:column!important;justify-content:space-between!important;align-items:flex-start!important;grid-template-columns:none!important;width:100%;height:118px!important;min-height:0!important;justify-self:stretch;box-sizing:border-box;min-width:0;margin:0!important;padding:14px!important;border-radius:22px!important}
+#cards.sav-tiles .card:not(.p){display:flex!important;flex-direction:column!important;justify-content:space-between!important;align-items:flex-start!important;grid-template-columns:none!important;width:100%;height:92px!important;min-height:0!important;justify-self:stretch;box-sizing:border-box;min-width:0;margin:0!important;padding:14px!important;border-radius:22px!important}
 #cards.sav-tiles .card:not(.p) .cv,#cards.sav-tiles .card:not(.p) .bar{display:none!important}
 #cards.sav-tiles .card:not(.p) .cl{flex-direction:column;align-items:flex-start;gap:14px;font-size:17px}
 #cards.sav-tiles .card:not(.p) .ci svg{width:36px;height:36px}
@@ -487,17 +487,47 @@ html[data-pg="set"] #funds,html[data-pg="cry"] #funds,html[data-pg="set"] #mt,ht
 .bnav button{font-size:12px}
 .bnav .ncry{color:#f2a65a}.bnav .nset{color:#c9d4f0}
 .bnav .ncry span,.bnav .nset span{color:var(--mut)}
-#cards.sav-tiles .card:not(.p){padding:10px!important}
+#cards.sav-tiles .card:not(.p){padding:8px 12px!important}
 #cards.sav-tiles .card:not(.p) .cl{display:contents}
 #cards.sav-tiles .card:not(.p) .ci{align-self:center;display:flex}
-#cards.sav-tiles .card:not(.p) .ci svg{width:64px;height:64px;stroke-width:1.3}
+#cards.sav-tiles .card:not(.p) .ci svg{width:44px;height:44px;stroke-width:1.5}
 #cards.sav-tiles .card:not(.p) em{align-self:flex-start;margin-top:auto;font-size:13px;font-weight:700;line-height:1.1}
+
+/* v17: shorter tiles, theme control, light theme */
+.seg3{display:flex;gap:8px;margin:0 0 10px}
+.seg3 button{flex:1;padding:12px 6px;border-radius:14px;border:1.5px solid rgba(120,150,230,.55);background:rgba(255,255,255,.06);color:#fff;font-size:15px;font-weight:800}
+.seg3 button.on{background:rgba(79,125,230,.45);border-color:#4f7de6}
+html[data-theme="light"]{color-scheme:light;--ink:#16233f;--mut:#55657f;--hair:rgba(40,60,120,.18)}
+html[data-theme="light"],html[data-theme="light"] body{background-color:#eef3fb!important;background-image:none!important;color-scheme:light}
+html[data-theme="light"] body{color:#16233f;background:#eef3fb}
+html[data-theme="light"] body::before{background-image:none;background-color:#eef3fb}
+html[data-theme="light"] h1,html[data-theme="light"] h2,html[data-theme="light"] h3,html[data-theme="light"] #ptitle h2,html[data-theme="light"] .setrow,html[data-theme="light"] .card .cl,html[data-theme="light"] .card .cv,html[data-theme="light"] .card .amt,html[data-theme="light"] .e,html[data-theme="light"] #tv,html[data-theme="light"] .tot2 .tv,html[data-theme="light"] .card.p .cn b,html[data-theme="light"] .card.p .rt b{color:#16233f}
+html[data-theme="light"] h1 .w1{color:#9a7420}
+html[data-theme="light"] header{background:#ffffff;border-color:#c9a24e;box-shadow:0 4px 14px rgba(20,40,90,.12)}
+html[data-theme="light"] #tot{background:linear-gradient(135deg,#dbe7ff,#f1f5ff);border-color:#7f9bd6;box-shadow:0 4px 14px rgba(20,40,90,.10)}
+html[data-theme="light"] #tot .tl{color:#2b3f6b}
+html[data-theme="light"] #tot,html[data-theme="light"] #tot .tv,html[data-theme="light"] #tot .tv b,html[data-theme="light"] #tot .tv small{color:#16233f}
+html[data-theme="light"] #tot .tv b::after,html[data-theme="light"] #tot .tv::after{color:#16233f}
+html[data-theme="light"] .card{background:linear-gradient(135deg,rgba(var(--ac),.16),#ffffff 85%);box-shadow:0 2px 8px rgba(20,40,90,.08)}
+html[data-theme="light"] #cards,html[data-theme="light"] #hist,html[data-theme="light"] .panel,html[data-theme="light"] .sheet .panel{background:#ffffff;border-color:#b8c6e6;box-shadow:0 6px 18px rgba(20,40,90,.10)}
+html[data-theme="light"] #cards{border:0;background:none;box-shadow:none}
+html[data-theme="light"] .e{background:rgba(20,40,90,.04)}
+html[data-theme="light"] input,html[data-theme="light"] select{background:#ffffff;color:#16233f;border-color:#8ea3cf}
+html[data-theme="light"] .setrow{background:#ffffff;border-color:#8ea3cf;box-shadow:0 2px 8px rgba(20,40,90,.08)}
+html[data-theme="light"] .setrow i{color:#4f7de6}
+html[data-theme="light"] .seg3 button{background:#ffffff;color:#16233f;border-color:#8ea3cf}
+html[data-theme="light"] .seg3 button.on{background:#dbe6ff;border-color:#4f7de6}
+html[data-theme="light"] .bnav{background:rgba(255,255,255,.96);border-top-color:#c6d2ea}
+html[data-theme="light"] .bnav button.on{background:rgba(79,125,230,.14)}
+html[data-theme="light"] .bnav button.on span{color:#16233f}
+html[data-theme="light"] .tb button,html[data-theme="light"] .tbx,html[data-theme="light"] .pb{background:#ffffff;color:#16233f}
+html[data-theme="light"] .cryempty{background:#ffffff}
 </style>
 </head>
 <body class="locked">
 <div id="splash" aria-hidden="true"><img src="logo.png" alt=""><b>Family<span>VAULT</span></b></div>
 
-<script>try{var d=document.documentElement;if(localStorage.getItem("fv_cred"))d.classList.add("lk");d.classList.add("hidamt")}catch(e){}</script>
+<script>try{var d=document.documentElement;if(localStorage.getItem("fv_cred"))d.classList.add("lk");d.classList.add("hidamt");var t=localStorage.getItem("fv_theme")||"dark";d.dataset.theme=(t==="light"||(t==="auto"&&matchMedia("(prefers-color-scheme: light)").matches))?"light":"dark"}catch(e){}</script>
 <div class="top">
 <header><span class="pb" id="pSM"><img class="smg" src="sm.png" alt="SM"><b class="tx">SM</b><svg class="ey1" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="ey2" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></svg></span><h1><img src="favicon.png" alt=""><span class="w1">Family</span><span class="w2">VAULT</span></h1><span class="pb" id="pDM"><b class="tx">DM</b><svg class="ey1" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="ey2" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></svg></span></header>
 <div id="ptitle"><h2 id="pt">Savings</h2><p id="pd"></p></div>
@@ -526,6 +556,8 @@ html[data-pg="set"] #funds,html[data-pg="cry"] #funds,html[data-pg="set"] #mt,ht
   <button class="setrow" onclick="goTool('filter')"><span>Filter by date</span><i>&#8250;</i></button>
   <button class="setrow" onclick="goTool('summary')"><span>Monthly summary</span><i>&#8250;</i></button>
   <button class="setrow" onclick="goTool('export')"><span>Export &amp; reports</span><i>&#8250;</i></button>
+  <p class="pgh" style="margin-top:18px">Appearance</p>
+  <div class="seg3" id="themeSeg"><button data-t="light" onclick="setTheme('light')">Light</button><button data-t="dark" onclick="setTheme('dark')">Dark</button><button data-t="auto" onclick="setTheme('auto')">Auto</button></div>
 </div>
 <div id="pgCry" class="pg">
   <div class="cryempty"><b>Crypto</b><p>This page is ready. Tell me what you want to track here.</p></div>
@@ -1563,7 +1595,10 @@ function prefill(){const L=k=>{try{return localStorage.getItem(k)}catch(e){retur
 {const _s=save,_i=saveI;
  save=function(){try{const v=$('section').value;if(v)localStorage.setItem('fv_ls',v)}catch(e){}const r=_s.apply(this,arguments);setTimeout(()=>{if(app==='sav'&&sub===2)prefill()},900);return r};
  saveI=function(){try{const v=$('i_proj').value;if(v&&v!=='__new__')localStorage.setItem('fv_lp',v)}catch(e){}const r=_i.apply(this,arguments);setTimeout(()=>{if(app==='inv'&&sub===2)prefill()},900);return r}}
-function init(){
+function applyTheme(){const t=localStorage.getItem('fv_theme')||'dark';const light=t==='light'||(t==='auto'&&matchMedia('(prefers-color-scheme: light)').matches);document.documentElement.dataset.theme=light?'light':'dark';document.querySelectorAll('#themeSeg button').forEach(b=>b.classList.toggle('on',b.dataset.t===t))}
+function setTheme(t){try{localStorage.setItem('fv_theme',t)}catch(e){}applyTheme()}
+if(window.matchMedia)matchMedia('(prefers-color-scheme: light)').addEventListener('change',applyTheme);
+function init(){applyTheme();
   $('i_proj').addEventListener('change',onProjPick);
   $('sq').addEventListener('input',e=>{q=e.target.value;render()});
   $('sq').addEventListener('keydown',e=>{if(e.key==='Enter')e.target.blur()});
