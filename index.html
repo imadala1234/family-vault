@@ -667,6 +667,14 @@ html[data-theme="light"] .ctile .cbot .cval.up{color:#1f8a4c}
   <input type="file" id="restoreFile" accept="application/json,.json" class="hide" onchange="restoreBackup(this.files[0])">
   <p class="setnote">Includes crypto holdings and the savings and investments kept on this phone.</p>
   <div class="ownerOnly">
+    <p class="pgh">Automatic backup to Drive</p>
+    <div class="seg pref" data-key="bk_auto" data-def="1"><button data-v="1" onclick="setPref(this)">On</button><button data-v="0" onclick="setPref(this)">Off</button></div>
+    <div class="setinfo"><span>Last backed up</span><b id="bkLast">—</b></div>
+    <button class="setrow" onclick="backupNow(false)"><span>Back up now</span><i>&#8250;</i></button>
+    <button class="setrow" onclick="restoreFromDrive()"><span>Restore from Drive backup</span><i>&#8250;</i></button>
+    <p class="setnote">Backs up about 15 seconds after savings, investments or crypto change. Stored in this app's private Drive area, not in your Drive file list. If Drive asks for access, sign in once more.</p>
+  </div>
+  <div class="ownerOnly">
     <p class="pgh">Access</p>
     <div class="setinfo"><span>Owner</span><b id="accOwner">—</b></div>
     <div class="setinfo"><span>Can view</span><b id="accViewers">—</b></div>
@@ -1397,6 +1405,7 @@ function syncSettings(){
   const at=+(L.getItem('cry_synced_at')||0);
   const el=$('syncLast');if(el)el.textContent=at?new Date(at).toLocaleString('en-AU',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}):'Never';
   const st=$('syncSt');if(st)st.textContent=!cryCanSync()?'Owner sign-in needed':cryDirty?'Changes waiting to sync':'Up to date';
+  const bl=$('bkLast');if(bl){const t=+(L.getItem('bk_at')||0),er=L.getItem('bk_err');bl.textContent=er?'Failed: '+er:t?new Date(t).toLocaleString('en-AU',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}):'Never'}
   const ow=$('accOwner');if(ow)ow.textContent=C.OWNER||'';
   const vw=$('accViewers');if(vw)vw.textContent=(C.VIEWERS||[]).join(', ')||'None';
 }
@@ -1414,18 +1423,70 @@ function exportBackup(){
 }
 async function restoreBackup(file){
   if(!file)return;
+  try{await applyBackup(JSON.parse(await file.text()))}catch(e){showToast('Restore failed: '+(e.message||'invalid file'))}
+  $('restoreFile').value='';renderCrypto();syncSettings();
+}
+async function applyBackup(d){
+  if(d.app!=='family-vault'||!d.version)throw new Error('not a Family Vault backup');
+  if(!confirm('Restore this backup? It replaces the data on this phone.'))return;
+  if(Array.isArray(d.crypto)){crySave(d.crypto);cryDirty=true;L.setItem('cry_dirty','1')}
+  if(Array.isArray(d.savings)){entries=d.savings;L.setItem('st_cache',JSON.stringify(entries))}
+  if(d.investments&&Array.isArray(d.investments.e)){ients=d.investments.e;iproj=d.investments.p||[];L.setItem('iv_cache',JSON.stringify({e:ients,p:iproj}))}
+  render();renderCrypto();
+  if(cryCanSync()){try{await cryPersist(cryLoad(),true)}catch(e){}}
+  showToast('Backup restored');
+}
+/* ---------- automatic backup to the app's private Drive folder (owner only) ---------- */
+const BK_NAME='family-vault-backup.json';
+const bkOn=()=>role==='owner'&&prefGet('bk_auto','1')==='1';
+let bkTimer=null;
+function scheduleBackup(){if(!bkOn())return;clearTimeout(bkTimer);bkTimer=setTimeout(()=>backupNow(true),15000)}
+async function driveCall(url,opt={}){
+  const go=()=>fetch(url,{...opt,headers:{Authorization:'Bearer '+token,...(opt.headers||{})}});
+  let r=await go();
+  if(r.status===401&&email){try{await silentRefresh();r=await go()}catch(e){}}
+  if(r.status===401||r.status===403){throw new Error('Drive needs you to sign in once more')}
+  if(!r.ok)throw new Error('Drive request failed ('+r.status+')');
+  return r.json();
+}
+async function findBackupId(){
+  const q=encodeURIComponent("name='"+BK_NAME+"' and trashed=false");
+  const r=await driveCall('https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&fields=files(id)&q='+q);
+  const id=r.files&&r.files[0]&&r.files[0].id;if(id)L.setItem('bk_fid',id);return id||null;
+}
+async function backupNow(quiet){
+  if(role!=='owner'){if(!quiet)showToast('Only the owner can back up');return}
   try{
-    const d=JSON.parse(await file.text());
-    if(d.app!=='family-vault'||!d.version)throw new Error('not a Family Vault backup');
-    if(!confirm('Restore this backup? It replaces the data on this phone.'))return;
-    if(Array.isArray(d.crypto)){crySave(d.crypto);cryDirty=true;L.setItem('cry_dirty','1')}
-    if(Array.isArray(d.savings)){entries=d.savings;L.setItem('st_cache',JSON.stringify(entries))}
-    if(d.investments&&Array.isArray(d.investments.e)){ients=d.investments.e;iproj=d.investments.p||[];L.setItem('iv_cache',JSON.stringify({e:ients,p:iproj}))}
-    render();renderCrypto();
-    if(cryCanSync()){try{await cryPersist(cryLoad(),true)}catch(e){}}
-    showToast('Backup restored');
-  }catch(e){showToast('Restore failed: '+(e.message||'invalid file'))}
-  renderCrypto();syncSettings();$('restoreFile').value='';
+    if(!fresh()){try{await silentRefresh()}catch(e){}}
+    if(!token)throw new Error('Sign in to back up');
+    const body=JSON.stringify(bkPayload());
+    let fid=L.getItem('bk_fid')||await findBackupId();
+    if(fid){await driveCall('https://www.googleapis.com/upload/drive/v3/files/'+fid+'?uploadType=media&fields=id',{method:'PATCH',headers:{'Content-Type':'application/json'},body})}
+    else{
+      const bd='fvbk'+Date.now();
+      const meta=JSON.stringify({name:BK_NAME,parents:['appDataFolder'],mimeType:'application/json'});
+      const mp='--'+bd+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+meta+'\r\n--'+bd+'\r\nContent-Type: application/json\r\n\r\n'+body+'\r\n--'+bd+'--';
+      const r=await driveCall('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',headers:{'Content-Type':'multipart/related; boundary='+bd},body:mp});
+      L.setItem('bk_fid',r.id);
+    }
+    L.setItem('bk_at',String(Date.now()));L.removeItem('bk_err');
+    if(!quiet)showToast('Backed up to Drive');
+  }catch(e){
+    L.setItem('bk_err',e.message||'failed');
+    if(!quiet)showToast('Backup failed: '+(e.message||'try again'));
+  }
+  syncSettings();
+}
+function bkPayload(){return {app:'family-vault',version:1,exported:new Date().toISOString(),crypto:cryLoad(),savings:entries,investments:{e:ients,p:iproj}}}
+async function restoreFromDrive(){
+  if(role!=='owner'){showToast('Only the owner can restore');return}
+  try{
+    if(!fresh()){try{await silentRefresh()}catch(e){}}
+    const fid=L.getItem('bk_fid')||await findBackupId();
+    if(!fid)throw new Error('no backup in Drive yet');
+    await applyBackup(await driveCall('https://www.googleapis.com/drive/v3/files/'+fid+'?alt=media'));
+  }catch(e){showToast('Drive restore failed: '+(e.message||'try again'))}
+  renderCrypto();syncSettings();
 }
 function clearDevice(){
   const pend=cryDirty?' Crypto changes not yet synced will be lost.':'';
@@ -1650,7 +1711,7 @@ const API='https://sheets.googleapis.com/v4/spreadsheets/'+C.SHEET_ID;
 const IAPI=(C.INV_SHEET_ID&&!/^PASTE/i.test(C.INV_SHEET_ID))?'https://sheets.googleapis.com/v4/spreadsheets/'+C.INV_SHEET_ID:'';
 const ITAB=C.INV_TAB_ENTRIES||'Entries',STAB=C.INV_TAB_SECTIONS||'Sections';
 const VSI=C.VIEWERS_SEE_INVESTMENTS!==false;
-const SCOPE='https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/userinfo.email';
+const SCOPE='https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/userinfo.email';
 let token=null,email=L.getItem('st_email')||'',tc=null;
 let tokExp=0,refreshP=null,refreshT=null,silentFail=0;
 try{const t=JSON.parse(L.getItem('st_token')||'null');if(t&&t.exp>Date.now()+60000){token=t.v;tokExp=t.exp}}catch(e){}
@@ -1692,6 +1753,7 @@ async function call(base,path,opt={}){
   if(r.status===401&&email){try{await silentRefresh();r=await go()}catch(e){}}
   if(r.status===401){token=null;tokExp=0;L.removeItem('st_token');armSync();throw new Error('Session expired. Tap to reconnect.')}
   if(!r.ok){let m='Request failed';try{m=(await r.json()).error.message}catch(e){}throw new Error(m)}
+  if(opt.method&&opt.method!=='GET')scheduleBackup();
   return r.json();
 }
 const api=(p,o)=>call(API,p,o);
