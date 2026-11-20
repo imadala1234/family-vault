@@ -565,6 +565,10 @@ html[data-theme="light"] .cadd input{background:#ffffff;color:#16233f}
 html[data-theme="light"] .ctile .cbot .cval.up{color:#1f8a4c}
 html[data-theme="light"] .ctile .cbot .cval.down{color:#c8323c}
 html[data-theme="light"] .ctile{--tb:rgba(255,255,255,.9)}
+html[data-theme="light"] #addseg button,html[data-theme="light"] .seg button{color:#4a5672}
+html[data-theme="light"] #addseg button.on,html[data-theme="light"] .seg button.on,html[data-theme="light"] .seg button.on.x{color:#16233f;background:rgba(79,125,230,.22);border-color:rgba(79,125,230,.85);box-shadow:none}
+html[data-theme="light"] #form label,html[data-theme="light"] #formI label{color:#3b4a6b}
+html[data-theme="light"] #form .save,html[data-theme="light"] #formI .save{background:linear-gradient(135deg,#f6d27f,#e6a845);color:#16233f;border:1.5px solid #c8923c;box-shadow:0 2px 8px rgba(200,146,60,.25)}
 html[data-theme="light"] .e>div:last-child span{color:#16233f}
 html[data-theme="light"] .pos,html[data-theme="light"] .e .pos{color:#1f8a4c}
 html[data-theme="light"] .neg,html[data-theme="light"] .e .neg{color:#c8323c}
@@ -606,13 +610,13 @@ html[data-theme="light"] .ctile .cbot .cval.up{color:#1f8a4c}
 </div></nav>
 <button id="nA" class="nadd" onclick="tab(sub===2?1:2)" aria-label="Add entry"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></i></button>
 <div id="pgSet" class="pg">
+  <p class="pgh" style="margin-top:0">Appearance</p>
+  <div class="seg3" id="themeSeg"><button data-t="light" onclick="setTheme('light')">Light</button><button data-t="dark" onclick="setTheme('dark')">Dark</button><button data-t="auto" onclick="setTheme('auto')">Auto</button></div>
   <p class="pgh">Tools for Savings and Investments</p>
   <button class="setrow" onclick="goTool('search')"><span>Search entries</span><i>&#8250;</i></button>
   <button class="setrow" onclick="goTool('filter')"><span>Filter by date</span><i>&#8250;</i></button>
   <button class="setrow" onclick="goTool('summary')"><span>Monthly summary</span><i>&#8250;</i></button>
   <button class="setrow" onclick="goTool('export')"><span>Export &amp; reports</span><i>&#8250;</i></button>
-  <p class="pgh" style="margin-top:18px">Appearance</p>
-  <div class="seg3" id="themeSeg"><button data-t="light" onclick="setTheme('light')">Light</button><button data-t="dark" onclick="setTheme('dark')">Dark</button><button data-t="auto" onclick="setTheme('auto')">Auto</button></div>
 </div>
 <div id="pgCry" class="pg">
   <div id="cTop"></div>
@@ -901,7 +905,7 @@ function cryDraw(h,prices,at,msg){
   const total=h.reduce((s,c)=>s+(prices[c.id]!=null?prices[c.id]*c.qty:0),0),invT=h.reduce((s,c)=>s+(c.invested||0),0);
   const when=at?'Prices in AUD at '+new Date(at).toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'}):'Live prices not loaded yet';
   msg=[msg,crySyncMsg].filter(Boolean).join(' · ');
-  $('cTop').innerHTML=`<div class="ctot"><span>Crypto value</span><b class="amt">${audFmt.format(total)}</b><small>Invested ${escH(audFmt.format(invT))} · ${escH(when)}${msg?' · '+escH(msg):''}</small></div>`;
+  $('cTop').innerHTML=`<div class="ctot"><span>Crypto value</span><b class="amt">${audFmt.format(total)}</b><small>Invested ${escH(audFmt.format(invT))} · ${h.length} Crypto ${h.length===1?'Asset':'Assets'} · ${escH(when)}${msg?' · '+escH(msg):''}</small></div>`;
   const sorted=[...h].sort((a,b)=>a.name.localeCompare(b.name,'en',{sensitivity:'base'}));
   $('cList').innerHTML=sorted.length?'<div class="ctiles">'+sorted.map(c=>{
     const pr=prices[c.id],val=pr!=null?pr*c.qty:null,inv=c.invested;
