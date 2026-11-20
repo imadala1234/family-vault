@@ -546,7 +546,7 @@ html[data-theme="light"] .cadd input{background:#ffffff;color:#16233f}
 /* v19: crypto tiles like savings, add via + */
 #pgCry.hide{display:none!important}
 .ctiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 2px 4px;max-height:calc(3*118px + 2*10px + 8px);overflow-y:auto;-webkit-overflow-scrolling:touch}
-.ctile{position:relative;height:118px;box-sizing:border-box;border-radius:22px;border:1.5px solid;padding:8px 10px;overflow:hidden;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.ctile{background:linear-gradient(135deg,var(--ta),var(--tb,rgba(12,20,42,.88)) 85%);position:relative;height:118px;box-sizing:border-box;border-radius:22px;border:1.5px solid;padding:8px 10px;overflow:hidden;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .ctile .csym{position:absolute;top:9px;left:10px;max-width:55%}
 .ctile .cright{position:absolute;top:9px;right:10px;text-align:right;max-width:45%}
 .ctile .csym span,.ctile .cright span{display:block;font-size:12px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -564,6 +564,12 @@ html[data-theme="light"] .cadd input{background:#ffffff;color:#16233f}
 .ctile .cbot .cval.down{color:#ff6b6b}
 html[data-theme="light"] .ctile .cbot .cval.up{color:#1f8a4c}
 html[data-theme="light"] .ctile .cbot .cval.down{color:#c8323c}
+html[data-theme="light"] .ctile{--tb:rgba(255,255,255,.9)}
+html[data-theme="light"] .ctile .clogo span{color:#16233f;background:rgba(22,35,63,.08)}
+html[data-theme="light"] .ctot{background:linear-gradient(135deg,rgba(242,166,90,.28),rgba(255,255,255,.92) 85%)}
+html[data-theme="light"] .sumbar b,html[data-theme="light"] .sumbar i{color:#16233f}
+html[data-theme="light"] .sumbar span:last-child i{color:#1f8a4c}
+html[data-theme="light"] .ctile .cbot small,html[data-theme="light"] .ctot small,html[data-theme="light"] .ctot span{color:#4a5672}
 html[data-theme="light"] .ctile .csym span,html[data-theme="light"] .ctile .cright span,html[data-theme="light"] .ctile .ctop .cname,html[data-theme="light"] .ctile .cbot span{color:#16233f}
 html[data-theme="light"] .ctile .cbot .cval.up{color:#1f8a4c}
 </style>
@@ -896,7 +902,7 @@ function cryDraw(h,prices,at,msg){
     const pr=prices[c.id],val=pr!=null?pr*c.qty:null,inv=c.invested;
     const cls=val==null||inv==null?'':(val>inv?'up':'down');
     const col=c.color||cryColor(c);
-    return `<div class="ctile" data-id="${escH(c.id)}" style="border-color:${escH(col)};background:linear-gradient(135deg,${hexA(col,.30)},rgba(12,20,42,.88) 85%)">`+
+    return `<div class="ctile" data-id="${escH(c.id)}" style="border-color:${escH(col)};--ta:${hexA(col,.30)}">`+
       `<div class="ctop"><span class="cname">${escH(c.sym)}</span></div>`+
       `<div class="csym"><span>${escH(qtyFmt(c.qty))} ${escH(c.sym)}</span></div>`+
       `<div class="cright"><span class="amt">${pr!=null?fmtTile(pr):'price n/a'}</span></div>`+
