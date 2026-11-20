@@ -450,6 +450,11 @@ header{margin-bottom:8px;padding-bottom:8px}
 #ptitle h2{font-size:24px;letter-spacing:-.5px}
 @media (max-height:700px){#ptitle h2{font-size:21px}}
 #cards{border-top:0;padding-top:0;margin-top:0}
+.pref{margin:0 0 6px}.setnote{font-size:12px;color:var(--mut);margin:4px 2px 12px}
+.setinfo{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 4px;border-bottom:1px solid var(--hair);font-size:14px}
+.setinfo b{font-weight:700;text-align:right;word-break:break-word}
+.setrow.danger span{color:#ff6b6b}
+html[data-cur="plain"] #tot small{display:none}
 html.lk #splash{display:none}
 /* v14g: push the top bar down one row, clear of the status bar */
 .top{padding-top:calc(env(safe-area-inset-top,0px) + 30px)}
@@ -580,10 +585,6 @@ html[data-theme="light"] .cgt.up{color:#1f8a4c}html[data-theme="light"] .cgt.dow
 .calloc{display:flex;height:8px;border-radius:999px;overflow:hidden;margin:6px 2px 10px;background:rgba(160,175,215,.18)}
 .calloc i{display:block;min-width:2px;height:100%}.calloc i+i{border-left:1px solid rgba(9,16,34,.55)}
 .csort{margin:0 0 8px}.csort button{padding:6px 4px;font-size:13px;flex:1}
-#cUndo{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 84px);transform:translate(-50%,20px);display:flex;align-items:center;gap:14px;padding:10px 14px;border-radius:999px;background:rgba(12,20,42,.96);color:#fff;font-size:14px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:60;white-space:nowrap}
-#cUndo.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
-#cUndo button{border:0;background:none;color:var(--gold);font-weight:900;font-size:14px;padding:4px 6px}
-html[data-theme="light"] #cUndo{background:#16233f}
 .ctile .cbot .cval.up{color:#4fd17a}
 .ctile .cbot .cval.down{color:#ff6b6b}
 html[data-theme="light"] .ctile .cbot .cval.up{color:#1f8a4c}
@@ -611,7 +612,7 @@ html[data-theme="light"] .ctile .cbot .cval.up{color:#1f8a4c}
 <body class="locked">
 <div id="splash" aria-hidden="true"><img src="logo.png" alt=""><b>Family<span>VAULT</span></b></div>
 
-<script>try{var d=document.documentElement;if(localStorage.getItem("fv_cred"))d.classList.add("lk");d.classList.add("hidamt");var t=localStorage.getItem("fv_theme")||"dark";d.dataset.theme=(t==="light"||(t==="auto"&&matchMedia("(prefers-color-scheme: light)").matches))?"light":"dark"}catch(e){}</script>
+<script>try{var d=document.documentElement;if(localStorage.getItem("fv_cred"))d.classList.add("lk");if(localStorage.getItem("fv_start_hidden")!=="0")d.classList.add("hidamt");var t=localStorage.getItem("fv_theme")||"dark";d.dataset.theme=(t==="light"||(t==="auto"&&matchMedia("(prefers-color-scheme: light)").matches))?"light":"dark"}catch(e){}</script>
 <div class="top">
 <header><span class="pb" id="pSM"><img class="smg" src="sm.png" alt="SM"><b class="tx">SM</b><svg class="ey1" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="ey2" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></svg></span><h1><img src="favicon.png" alt=""><span class="w1">Family</span><span class="w2">VAULT</span></h1><span class="pb" id="pDM"><b class="tx">DM</b><svg class="ey1" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="ey2" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></svg></span></header>
 <div id="ptitle"><h2 id="pt">Savings</h2><p id="pd"></p></div>
@@ -644,6 +645,38 @@ html[data-theme="light"] .ctile .cbot .cval.up{color:#1f8a4c}
   <button class="setrow" onclick="goTool('filter')"><span>Filter by date</span><i>&#8250;</i></button>
   <button class="setrow" onclick="goTool('summary')"><span>Monthly summary</span><i>&#8250;</i></button>
   <button class="setrow" onclick="goTool('export')"><span>Export &amp; reports</span><i>&#8250;</i></button>
+  <p class="pgh">Privacy</p>
+  <div class="seg pref" data-key="fv_start_hidden" data-def="1"><button data-v="1" onclick="setPref(this)">Hidden</button><button data-v="0" onclick="setPref(this)">Shown</button></div>
+  <p class="setnote">Start with amounts hidden. Applies the next time you open the app.</p>
+  <p class="pgh">Auto-lock when you leave the app</p>
+  <div class="seg3 pref" data-key="fv_lock_min" data-def="1"><button data-v="1" onclick="setPref(this)">1 min</button><button data-v="5" onclick="setPref(this)">5 min</button><button data-v="15" onclick="setPref(this)">15 min</button></div>
+  <p class="setnote">Needs the Face ID lock on. Face ID is asked when you return.</p>
+  <div class="ownerOnly">
+    <p class="pgh">Crypto prices</p>
+    <div class="seg3 pref" data-key="fv_cry_refresh" data-def="0"><button data-v="0" onclick="setPref(this)">Manual</button><button data-v="5" onclick="setPref(this)">5 min</button><button data-v="15" onclick="setPref(this)">15 min</button></div>
+    <p class="setnote">Automatic refresh runs while the Crypto page is open.</p>
+    <p class="pgh">Sync</p>
+    <div class="setinfo"><span>Crypto last synced</span><b id="syncLast">—</b></div>
+    <div class="setinfo"><span>Status</span><b id="syncSt">—</b></div>
+    <button class="setrow" onclick="syncNow()"><span>Sync now</span><i>&#8250;</i></button>
+  </div>
+  <p class="pgh">Currency format</p>
+  <div class="seg pref" data-key="fv_cur_sym" data-def="A$"><button data-v="A$" onclick="setPref(this)">A$</button><button data-v="" onclick="setPref(this)">Plain</button></div>
+  <div class="seg pref" data-key="fv_cur_dec" data-def="2"><button data-v="2" onclick="setPref(this)">2 decimals</button><button data-v="0" onclick="setPref(this)">Whole numbers</button></div>
+  <p class="pgh">Backup</p>
+  <button class="setrow" onclick="exportBackup()"><span>Export backup file</span><i>&#8250;</i></button>
+  <button class="setrow" onclick="$('restoreFile').click()"><span>Restore from backup file</span><i>&#8250;</i></button>
+  <input type="file" id="restoreFile" accept="application/json,.json" class="hide" onchange="restoreBackup(this.files[0])">
+  <p class="setnote">Includes crypto holdings and the savings and investments kept on this phone.</p>
+  <div class="ownerOnly">
+    <p class="pgh">Access</p>
+    <div class="setinfo"><span>Owner</span><b id="accOwner">—</b></div>
+    <div class="setinfo"><span>Can view</span><b id="accViewers">—</b></div>
+    <p class="setnote">Access is set in config.js and takes effect after redeploying.</p>
+  </div>
+  <p class="pgh">Device</p>
+  <button class="setrow danger" onclick="clearDevice()"><span>Sign out and clear this device</span><i>&#8250;</i></button>
+  <p class="setnote">Removes data kept on this phone only. Google Drive is not changed.</p>
 </div>
 <div id="pgCry" class="pg">
   <div id="cTop"></div>
@@ -884,7 +917,11 @@ let ients=[],iproj=[],ifilter=null,istore=null,itype='Investment';
 const PCOL=['gold','savings','emergency','travel','violet'];
 const ITYPES=[['Investment','Investment'],['Profit Made','Profit'],['Reinvested Profit','Reinvested']];
 const $=id=>document.getElementById(id);
-const dollar=n=>(n<0?'-':'')+'A$'+Math.abs(n).toLocaleString('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2});
+function prefGet(k,d){try{const v=localStorage.getItem(k);return v==null?d:v}catch(e){return d}}
+function curSym(){return prefGet('fv_cur_sym','A$')}
+function curDec(){return +prefGet('fv_cur_dec','2')===0?0:2}
+function curNum(n){const d=curDec();return new Intl.NumberFormat('en-AU',{minimumFractionDigits:d,maximumFractionDigits:d}).format(n)}
+const dollar=n=>(n<0?'-':'')+curSym()+curNum(Math.abs(n));
 const money=n=>'AUD '+n.toLocaleString('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fm=n=>Number(n).toLocaleString('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2});
 const num=v=>typeof v==='number'?v:(parseFloat(String(v==null?'':v).replace(/[^0-9.\-]/g,''))||0);
@@ -919,8 +956,8 @@ let lastApp='sav';
 function goTool(t){setApp(lastApp);({search:openSearch,filter:openFilter,summary:openSummary,export:openExport})[t]()}
 const CG='https://api.coingecko.com/api/v3';
 let cryEditId=null,cryOpening=false;
-const audNum=new Intl.NumberFormat('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2});
-const audFmt={format:n=>'A$'+audNum.format(n)};
+
+const audFmt={format:n=>curSym()+curNum(n)};
 function escH(x){return String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function cryLoad(){try{return JSON.parse(localStorage.getItem('fv_crypto')||'[]')}catch(e){return []}}
 function crySave(h){try{localStorage.setItem('fv_crypto',JSON.stringify(h))}catch(e){}}
@@ -930,7 +967,7 @@ const CRY_BRAND={BTC:'#F7931A',ETH:'#627EEA',SOL:'#9945FF',XRP:'#346AA9',ADA:'#0
 function cryColor(h){if(CRY_BRAND[h.sym])return CRY_BRAND[h.sym];let x=0;for(const ch of h.id)x=(x*31+ch.charCodeAt(0))>>>0;return 'hsl('+(x%360)+',70%,60%)'}
 function hexA(c,a){if(c[0]!=='#')return c.replace(')',','+a+')').replace('hsl(','hsla(');const n=parseInt(c.slice(1),16);return 'rgba('+(n>>16&255)+','+(n>>8&255)+','+(n&255)+','+a+')'}
 function qtyFmt(n){const d=Math.abs(n)>999?0:2;return new Intl.NumberFormat('en-AU',{minimumFractionDigits:d,maximumFractionDigits:d}).format(n)}
-function fmtTile(n){return 'A$'+new Intl.NumberFormat('en-AU',{minimumFractionDigits:n>=1000?0:2,maximumFractionDigits:n>=1000?0:2}).format(n)}
+function fmtTile(n){const d=curDec()===0||Math.abs(n)>=1000?0:2;return curSym()+new Intl.NumberFormat('en-AU',{minimumFractionDigits:d,maximumFractionDigits:d}).format(n)}
 let crySort=(()=>{try{return localStorage.getItem('cry_sort')||'name'}catch(e){return 'name'}})();
 function crySetSort(m){crySort=m;try{localStorage.setItem('cry_sort',m)}catch(e){}renderCrypto()}
 function cryGainTxt(g,base){const p=base?g/base*100:0;return `${g>=0?'+':'-'}${fmtTile(Math.abs(g))} (${g>=0?'+':''}${p.toFixed(1)}%)`}
@@ -955,7 +992,7 @@ function cryDraw(h,prices,at,msg){
   $('cList').innerHTML=sorted.length?'<div class="ctiles">'+sorted.map(c=>{
     const pr=prices[c.id],v=val(c),inv=c.invested;
     const cls=v==null||inv==null?'':(v>inv?'up':'down');
-    const gn=v!=null&&inv!=null?`<span class="cgn ${cls}">${escH(cryGainTxt(v-inv,inv))}</span>`:'';
+    const gn=v!=null&&inv!=null?(()=>{const g=v-inv,pc=inv?g/inv*100:0,ds=Math.abs(g)>=1000?0:2;return `<span class="cgn ${cls}">${g>=0?'+':'-'}${curSym()}${Math.abs(g).toLocaleString('en-AU',{minimumFractionDigits:ds,maximumFractionDigits:ds})}</span><span class="cgn ${cls}">${g>=0?'+':''}${pc.toFixed(1)}%</span>`})():'';
     const col=c.color||cryColor(c);
     return `<div class="ctile" data-id="${escH(c.id)}" style="border-color:${escH(col)};--ta:${hexA(col,.30)}">`+
       `<div class="ctop"><span class="cname">${escH(c.sym)}</span></div>`+
@@ -989,7 +1026,7 @@ async function cryPersist(h,silent){
   const base='https://sheets.googleapis.com/v4/spreadsheets/'+sid;
   await call(base,'/values/'+enc(cryTab()+'!A2:H')+':clear',{method:'POST',body:'{}'});
   if(h.length)await call(base,'/values/'+enc(cryTab()+'!A2')+'?valueInputOption=USER_ENTERED',{method:'PUT',body:JSON.stringify({values:h.map(c=>[c.id,c.name,c.sym,c.qty,c.invested==null?'':c.invested,c.img||'',c.color||'',nowStamp()])})});
-  L.setItem('cry_synced','1');crySyncMsg='';cryDirty=false;localStorage.removeItem('cry_dirty');
+  L.setItem('cry_synced','1');L.setItem('cry_synced_at',String(Date.now()));crySyncMsg='';cryDirty=false;localStorage.removeItem('cry_dirty');
 }
 async function cryPull(silentOnly){
   if(!cryCanSync()||!crySid())return null;
@@ -1000,7 +1037,7 @@ async function cryPull(silentOnly){
   const local=cryLoad();
   if(!rows.length&&local.length&&!L.getItem('cry_synced')){await cryPersist(local,true);return local}
   rows.forEach(c=>{if(!c.color)c.color=cryColor(c)});
-  crySave(rows);L.setItem('cry_synced','1');crySyncMsg='';
+  crySave(rows);L.setItem('cry_synced','1');L.setItem('cry_synced_at',String(Date.now()));crySyncMsg='';
   return rows;
 }
 async function renderCrypto(){
@@ -1031,13 +1068,8 @@ function cryOpenEdit(id){
   $('cInv').value=c.invested==null?'':c.invested;cryMsg('');
   $('cDel').classList.remove('hide');$('cSave').textContent='Save changes';$('cHead').textContent='Edit '+c.sym;navSync();
 }
-let cryUndoT=null;
 function cryShowUndo(prev,name){
-  let t=document.getElementById('cUndo');
-  if(!t){t=document.createElement('div');t.id='cUndo';t.setAttribute('role','status');document.body.appendChild(t)}
-  t.innerHTML=`<span>Removed ${escH(name)}</span><button type="button">Undo</button>`;
-  t.querySelector('button').onclick=async()=>{clearTimeout(cryUndoT);t.classList.remove('show');try{await cryPersist(prev)}catch(e){}renderCrypto()};
-  t.classList.add('show');clearTimeout(cryUndoT);cryUndoT=setTimeout(()=>t.classList.remove('show'),6000);
+  showToast('Removed '+name,async()=>{try{await cryPersist(prev)}catch(e){}renderCrypto()});
 }
 async function cryDelete(){
   if(!cryEditId)return;
@@ -1357,12 +1389,63 @@ async function unlock(){
   catch(e){$('lk_msg').textContent=(e&&e.name==='NotAllowedError')?'Tap Unlock to try again':'Could not unlock: '+((e&&e.message)||'try again');$('lk_msg').className='msg err'}
   unlocking=false;
 }
+const lockMin=()=>{const m=+prefGet('fv_lock_min','1');return m>0?m:1};
+setInterval(()=>{const m=+prefGet('fv_cry_refresh','0');if(!m||app!=='cry'||document.hidden)return;const c=cryCache();if(!c.at||Date.now()-c.at>=m*60000)renderCrypto()},60000);
+function setPref(b){
+  const k=b.parentElement.dataset.key;
+  try{localStorage.setItem(k,b.dataset.v)}catch(e){}
+  if(k==='fv_cur_sym'||k==='fv_cur_dec'){render();renderCrypto()}
+  syncSettings();
+}
+function syncSettings(){
+  document.querySelectorAll('.pref').forEach(g=>{const cur=prefGet(g.dataset.key,g.dataset.def);g.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===cur))});
+  document.documentElement.dataset.cur=curSym()?'sym':'plain';
+  const at=+(L.getItem('cry_synced_at')||0);
+  const el=$('syncLast');if(el)el.textContent=at?new Date(at).toLocaleString('en-AU',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}):'Never';
+  const st=$('syncSt');if(st)st.textContent=!cryCanSync()?'Owner sign-in needed':cryDirty?'Changes waiting to sync':'Up to date';
+  const ow=$('accOwner');if(ow)ow.textContent=C.OWNER||'';
+  const vw=$('accViewers');if(vw)vw.textContent=(C.VIEWERS||[]).join(', ')||'None';
+}
+async function syncNow(){
+  if(!cryCanSync()){showToast('Sign in as the owner to sync');return}
+  try{if(cryDirty){await cryPersist(cryLoad())}else{await cryPull(false)}showToast('Synced')}
+  catch(e){showToast('Sync failed: '+(e.message||'try again'))}
+  renderCrypto();syncSettings();
+}
+function exportBackup(){
+  const data={app:'family-vault',version:1,exported:new Date().toISOString(),crypto:cryLoad(),savings:entries,investments:{e:ients,p:iproj}};
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
+  a.download='family-vault-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);showToast('Backup file saved');
+}
+async function restoreBackup(file){
+  if(!file)return;
+  try{
+    const d=JSON.parse(await file.text());
+    if(d.app!=='family-vault'||!d.version)throw new Error('not a Family Vault backup');
+    if(!confirm('Restore this backup? It replaces the data on this phone.'))return;
+    if(Array.isArray(d.crypto)){crySave(d.crypto);cryDirty=true;L.setItem('cry_dirty','1')}
+    if(Array.isArray(d.savings)){entries=d.savings;L.setItem('st_cache',JSON.stringify(entries))}
+    if(d.investments&&Array.isArray(d.investments.e)){ients=d.investments.e;iproj=d.investments.p||[];L.setItem('iv_cache',JSON.stringify({e:ients,p:iproj}))}
+    render();renderCrypto();
+    if(cryCanSync()){try{await cryPersist(cryLoad(),true)}catch(e){}}
+    showToast('Backup restored');
+  }catch(e){showToast('Restore failed: '+(e.message||'invalid file'))}
+  renderCrypto();syncSettings();$('restoreFile').value='';
+}
+function clearDevice(){
+  const pend=cryDirty?' Crypto changes not yet synced will be lost.':'';
+  if(!confirm('Sign out and clear this device? Savings, investments and crypto data kept on this phone will be removed. Google Drive is not changed.'+pend))return;
+  ['fv_crypto','fv_cprice','cry_sid','cry_synced','cry_synced_at','cry_dirty','fv_cred'].forEach(k=>L.removeItem(k));
+  cryDirty=false;crySyncMsg='';signOut();syncSettings();
+}
+new MutationObserver(()=>{if(document.documentElement.dataset.pg==='set')syncSettings()}).observe(document.documentElement,{attributes:true,attributeFilter:['data-pg']});
 let hiddenAt=0;
 document.addEventListener('visibilitychange',()=>{
   const d=document.documentElement;
   if(document.hidden){hiddenAt=Date.now();d.classList.add('hidamt')}
   else if(lockOn()){
-    if(hiddenAt&&Date.now()-hiddenAt>15000)d.classList.add('lk');
+    if(hiddenAt&&Date.now()-hiddenAt>lockMin()*60000)d.classList.add('lk');
     if(d.classList.contains('lk'))setTimeout(unlock,250);
   }
 });
@@ -1723,7 +1806,7 @@ function applyRole(){
   $('mode').textContent=role==='owner'?'':'View only';
   $('t2').classList.toggle('hide',role!=='owner');$('nA').classList.toggle('hide',role!=='owner');$('n2').classList.toggle('hide',!invAllowed());
   $('st').classList.toggle('hide',role!=='owner');
-  $('n3').classList.toggle('hide',role!=='owner');$('as3').classList.toggle('hide',role!=='owner');
+  $('n3').classList.toggle('hide',role!=='owner');document.querySelectorAll('.ownerOnly').forEach(e=>e.classList.toggle('hide',role!=='owner'));$('as3').classList.toggle('hide',role!=='owner');
   $('m2').classList.toggle('hide',!invAllowed());
   if(!invAllowed()&&app==='inv')setApp('sav');
   if(role!=='owner'&&sub===2)tab(1);
