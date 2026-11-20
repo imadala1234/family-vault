@@ -1050,7 +1050,7 @@ async function cryAdd(){
   }catch(e){cryMsg('Could not look up that coin, check your connection')}
 }
 async function cryRemove(id){const h=cryLoad().filter(c=>c.id!==id);try{await cryPersist(h)}catch(e){crySyncMsg='Removed on this device. Drive sync failed: '+e.message}renderCrypto()}
-function setApp(a){
+function setApp(a){if(a==='cry'&&role!=='owner')a='sav';
   app=a;if(a==='cry')renderCrypto();if(a==='sav'||a==='inv')lastApp=a;
   document.documentElement.dataset.pg=(a==='set'||a==='cry')?a:'data';document.documentElement.dataset.app=a;
   $('m1').classList.toggle('on',a==='sav');$('m2').classList.toggle('on',a==='inv');
@@ -1682,6 +1682,7 @@ function applyRole(){
   $('mode').textContent=role==='owner'?'':'View only';
   $('t2').classList.toggle('hide',role!=='owner');$('nA').classList.toggle('hide',role!=='owner');$('n2').classList.toggle('hide',!invAllowed());
   $('st').classList.toggle('hide',role!=='owner');
+  $('n3').classList.toggle('hide',role!=='owner');$('as3').classList.toggle('hide',role!=='owner');
   $('m2').classList.toggle('hide',!invAllowed());
   if(!invAllowed()&&app==='inv')setApp('sav');
   if(role!=='owner'&&sub===2)tab(1);
