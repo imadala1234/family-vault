@@ -454,6 +454,7 @@ header{margin-bottom:8px;padding-bottom:8px}
 .setinfo{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 4px;border-bottom:1px solid var(--hair);font-size:14px}
 .setinfo b{font-weight:700;text-align:right;word-break:break-word}
 .setrow.danger span{color:#ff6b6b}
+@media (orientation:portrait){html[data-pg="set"],html[data-pg="set"] body{overflow-y:auto}}
 html[data-cur="plain"] #tot small{display:none}
 html.lk #splash{display:none}
 /* v14g: push the top bar down one row, clear of the status bar */
@@ -577,14 +578,9 @@ html[data-pg="cry"] #hdiv1{margin-bottom:8px}
 .ctile .cbot span{font-size:11px;font-weight:700;color:#fff;white-space:nowrap}
 .ctile .cbot b{font-size:11px;font-weight:800}
 .ctile .cbot small{display:block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);font-weight:700}
-.ctile .cgn{display:block;margin-top:2px;font-size:10px;font-weight:800;white-space:nowrap}
-.ctile .cgn.up{color:#4fd17a}.ctile .cgn.down{color:#ff6b6b}
-html[data-theme="light"] .ctile .cgn.up{color:#1f8a4c}html[data-theme="light"] .ctile .cgn.down{color:#c8323c}
 .cgt{display:block;font-weight:800;font-size:12px}.cgt.up{color:#4fd17a}.cgt.down{color:#ff6b6b}
 html[data-theme="light"] .cgt.up{color:#1f8a4c}html[data-theme="light"] .cgt.down{color:#c8323c}
-.calloc{display:flex;height:8px;border-radius:999px;overflow:hidden;margin:6px 2px 10px;background:rgba(160,175,215,.18)}
-.calloc i{display:block;min-width:2px;height:100%}.calloc i+i{border-left:1px solid rgba(9,16,34,.55)}
-.csort{margin:0 0 8px}.csort button{padding:6px 4px;font-size:13px;flex:1}
+.csort{display:flex;gap:6px;margin:0 0 6px}.csort button{flex:none;padding:3px 12px;font-size:12px;border-width:1px;border-radius:999px}
 .ctile .cbot .cval.up{color:#4fd17a}
 .ctile .cbot .cval.down{color:#ff6b6b}
 html[data-theme="light"] .ctile .cbot .cval.up{color:#1f8a4c}
@@ -979,10 +975,8 @@ function cryDraw(h,prices,at,msg){
   const when=at?new Date(at).toLocaleTimeString('en-AU',{hour:'numeric',minute:'2-digit'}):'Refresh';
   msg=[msg,crySyncMsg].filter(Boolean).join(' · ');
   const gainLine=priced.length?`<small class="cgt ${gainT>=0?'up':'down'}">Gain ${escH(cryGainTxt(gainT,gainBase))}</small>`:'';
-  const bar=total>0?h.filter(c=>(val(c)||0)>0).map(c=>`<i title="${escH(c.sym)} ${Math.round(val(c)/total*100)}%" style="flex:${val(c)};background:${escH(c.color||cryColor(c))}"></i>`).join(''):'';
   const sb=[['name','A–Z'],['value','Value'],['gain','Gain']].map(([k,l])=>`<button class="${crySort===k?'on':''}" onclick="crySetSort('${k}')">${l}</button>`).join('');
   $('cTop').innerHTML=`<div class="ctot"><div class="ctotop"><span>Crypto value</span><button class="cref" onclick="renderCrypto()" aria-label="Tap to refresh prices">${escH(when)}</button></div><b class="amt">${audFmt.format(total)}</b><small>Invested ${escH(audFmt.format(invT))} · ${h.length} Crypto ${h.length===1?'Asset':'Assets'}${msg?' · '+escH(msg):''}</small>${gainLine}</div>`+
-    (bar?`<div class="calloc" role="img" aria-label="Allocation by value">${bar}</div>`:'')+
     `<div class="seg csort" role="group" aria-label="Sort coins">${sb}</div><div class="hdiv"></div>`;
   const sorted=[...h].sort((a,b)=>{
     if(crySort==='value')return (val(b)??-1e18)-(val(a)??-1e18);
@@ -992,12 +986,11 @@ function cryDraw(h,prices,at,msg){
   $('cList').innerHTML=sorted.length?'<div class="ctiles">'+sorted.map(c=>{
     const pr=prices[c.id],v=val(c),inv=c.invested;
     const cls=v==null||inv==null?'':(v>inv?'up':'down');
-    const gn=v!=null&&inv!=null?(()=>{const g=v-inv,pc=inv?g/inv*100:0,ds=Math.abs(g)>=1000?0:2;return `<span class="cgn ${cls}">${g>=0?'+':'-'}${curSym()}${Math.abs(g).toLocaleString('en-AU',{minimumFractionDigits:ds,maximumFractionDigits:ds})}</span><span class="cgn ${cls}">${g>=0?'+':''}${pc.toFixed(1)}%</span>`})():'';
     const col=c.color||cryColor(c);
     return `<div class="ctile" data-id="${escH(c.id)}" style="border-color:${escH(col)};--ta:${hexA(col,.30)}">`+
       `<div class="ctop"><span class="cname">${escH(c.sym)}</span></div>`+
       `<div class="csym"><span>${escH(qtyFmt(c.qty))}</span></div>`+
-      `<div class="cright"><span class="amt">${pr!=null?fmtTile(pr):'price n/a'}</span>${gn}</div>`+
+      `<div class="cright"><span class="amt">${pr!=null?fmtTile(pr):'price n/a'}</span></div>`+
       `<div class="clogo">${c.img?`<img src="${escH(c.img)}" alt="${escH(c.name)}" onerror="this.outerHTML='<span>${escH(c.sym)}</span>'">`:`<span>${escH(c.sym)}</span>`}</div>`+
       `<div class="cbot"><span><small>Invested</small><b class="amt">${inv!=null?fmtTile(inv):'—'}</b></span><span class="cval ${cls}"><small>Value</small><b class="amt">${v!=null?fmtTile(v):'—'}</b></span></div>`+
       `</div>`;
