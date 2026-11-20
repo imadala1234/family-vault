@@ -536,7 +536,7 @@ html[data-theme="light"] .hdiv{background:linear-gradient(90deg,transparent,rgba
 .ctotop{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .ctotop span{margin:0}
 .cref{font-family:inherit;background:none;border:1px solid rgba(160,175,215,.5);border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700;color:var(--mut);white-space:nowrap}
-.cref i{font-style:normal;font-size:14px}
+.cref{min-width:76px;text-align:center}
 .crow{display:flex;align-items:center;gap:10px;padding:12px 14px;margin-bottom:8px;border-radius:16px;border:1.5px solid rgba(242,166,90,.45);background:rgba(255,255,255,.04)}
 .crow .cn{flex:1;min-width:0}
 .crow .cn b{display:block;color:#fff;font-size:15px}
@@ -921,9 +921,9 @@ function qtyFmt(n){const d=Math.abs(n)>9999?0:2;return new Intl.NumberFormat('en
 function fmtTile(n){return 'A$'+new Intl.NumberFormat('en-AU',{minimumFractionDigits:n>=1000?0:2,maximumFractionDigits:n>=1000?0:2}).format(n)}
 function cryDraw(h,prices,at,msg){
   const total=h.reduce((s,c)=>s+(prices[c.id]!=null?prices[c.id]*c.qty:0),0),invT=h.reduce((s,c)=>s+(c.invested||0),0);
-  const when=at?'Refreshed at '+new Date(at).toLocaleTimeString('en-AU',{hour:'numeric',minute:'2-digit'}):'Not refreshed yet';
+  const when=at?new Date(at).toLocaleTimeString('en-AU',{hour:'numeric',minute:'2-digit'}):'Refresh';
   msg=[msg,crySyncMsg].filter(Boolean).join(' · ');
-  $('cTop').innerHTML=`<div class="ctot"><div class="ctotop"><span>Crypto value</span><button class="cref" onclick="renderCrypto()" aria-label="Refresh prices"><i>&#8635;</i></button></div><b class="amt">${audFmt.format(total)}</b><small>Invested ${escH(audFmt.format(invT))} · ${h.length} Crypto ${h.length===1?'Asset':'Assets'}${msg?' · '+escH(msg):''}</small></div><div class="hdiv"></div>`;
+  $('cTop').innerHTML=`<div class="ctot"><div class="ctotop"><span>Crypto value</span><button class="cref" onclick="renderCrypto()" aria-label="Tap to refresh prices">${escH(when)}</button></div><b class="amt">${audFmt.format(total)}</b><small>Invested ${escH(audFmt.format(invT))} · ${h.length} Crypto ${h.length===1?'Asset':'Assets'}${msg?' · '+escH(msg):''}</small></div><div class="hdiv"></div>`;
   const sorted=[...h].sort((a,b)=>a.name.localeCompare(b.name,'en',{sensitivity:'base'}));
   $('cList').innerHTML=sorted.length?'<div class="ctiles">'+sorted.map(c=>{
     const pr=prices[c.id],val=pr!=null?pr*c.qty:null,inv=c.invested;
