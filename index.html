@@ -942,6 +942,7 @@ function cryDraw(h,prices,at,msg){
    Tab Holdings: A Coin ID | B Name | C Symbol | D Quantity | E Invested (A$) | F Image | G Colour | H Updated */
 const cryTab=()=>(window.APP_CONFIG&&APP_CONFIG.CRY_TAB)||'Holdings',CRY_HDR=['Coin ID','Name','Symbol','Quantity','Invested (A$)','Image','Colour','Updated'];
 let crySyncMsg='';
+let cryDirty=localStorage.getItem('cry_dirty')==='1';
 function crySid(){const c=C.CRY_SHEET_ID;return (c&&!/^PASTE/i.test(c))?c:(L.getItem('cry_sid')||'')}
 function cryCanSync(){return role==='owner'&&!!(token||email)}
 async function cryCreate(){
@@ -951,24 +952,25 @@ async function cryCreate(){
   crySyncMsg='Created a Crypto sheet in your Drive. Paste its ID into config.js (CRY_SHEET_ID) to share it across devices.';
   return sid;
 }
-async function cryPersist(h){
+async function cryPersist(h,silent){
   crySave(h);
+  cryDirty=true;localStorage.setItem('cry_dirty','1');
   if(!cryCanSync())return;
-  await tok();
+  if(silent)await silentRefresh();else await tok();
   let sid=crySid();if(!sid)sid=await cryCreate();
   const base='https://sheets.googleapis.com/v4/spreadsheets/'+sid;
   await call(base,'/values/'+enc(cryTab()+'!A2:H')+':clear',{method:'POST',body:'{}'});
   if(h.length)await call(base,'/values/'+enc(cryTab()+'!A2')+'?valueInputOption=USER_ENTERED',{method:'PUT',body:JSON.stringify({values:h.map(c=>[c.id,c.name,c.sym,c.qty,c.invested==null?'':c.invested,c.img||'',c.color||'',nowStamp()])})});
-  L.setItem('cry_synced','1');crySyncMsg='';
+  L.setItem('cry_synced','1');crySyncMsg='';cryDirty=false;localStorage.removeItem('cry_dirty');
 }
 async function cryPull(silentOnly){
   if(!cryCanSync()||!crySid())return null;
-  if(silentOnly&&!fresh()){try{await silentRefresh()}catch(e){crySyncMsg='Showing coins saved on this device. Save a change to sync with Drive.';return null}}
+  if(silentOnly&&!fresh()){try{await silentRefresh()}catch(e){return null}}
   else await tok();
   const r=await call('https://sheets.googleapis.com/v4/spreadsheets/'+crySid(),'/values/'+enc(cryTab()+'!A2:H')+'?valueRenderOption=UNFORMATTED_VALUE');
   const rows=(r.values||[]).filter(x=>x[0]).map(x=>({id:String(x[0]),name:String(x[1]||x[0]),sym:String(x[2]||''),qty:Number(x[3])||0,invested:x[4]===''||x[4]==null?null:Number(x[4]),img:String(x[5]||''),color:String(x[6]||'')}));
   const local=cryLoad();
-  if(!rows.length&&local.length&&!L.getItem('cry_synced')){await cryPersist(local);return local}
+  if(!rows.length&&local.length&&!L.getItem('cry_synced')){await cryPersist(local,true);return local}
   rows.forEach(c=>{if(!c.color)c.color=cryColor(c)});
   crySave(rows);L.setItem('cry_synced','1');crySyncMsg='';
   return rows;
@@ -976,7 +978,7 @@ async function cryPull(silentOnly){
 async function renderCrypto(){
   let h=cryLoad();const c=cryCache();
   cryDraw(h,c.p,c.at,'');
-  try{const rows=await cryPull(true);if(rows)h=rows}catch(e){crySyncMsg='Drive sync failed: '+e.message}
+  try{if(cryDirty&&cryCanSync()){await cryPersist(h,true)}else{const rows=await cryPull(true);if(rows)h=rows}}catch(e){}
   cryDraw(h,c.p,c.at,'');
   if(!h.length)return;
   const ids=h.map(x=>x.id);
@@ -1019,6 +1021,7 @@ document.addEventListener('pointermove',e=>{
 document.addEventListener('pointerup',cryPressEnd);
 document.addEventListener('pointercancel',cryPressEnd);
 document.addEventListener('contextmenu',e=>{if(e.target.closest&&e.target.closest('#cList .ctile'))e.preventDefault()});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&(app==='cry'||cryDirty))renderCrypto()});
 async function cryAdd(){
   if(cryEditId){
     const qty=parseFloat($('cQty').value),inv=parseFloat($('cInv').value);
@@ -1027,7 +1030,7 @@ async function cryAdd(){
     const h=cryLoad(),ex=h.find(c=>c.id===cryEditId);
     if(!ex){cryMsg('That coin is no longer in your list');return}
     ex.qty=qty;ex.invested=inv;
-    try{await cryPersist(h)}catch(e){crySyncMsg='Saved on this device. Drive sync failed: '+e.message}
+    try{await cryPersist(h)}catch(e){}
     tab(1);renderCrypto();return;
   }
   const q=($('cSym').value||'').trim(),qty=parseFloat($('cQty').value);
@@ -1044,12 +1047,12 @@ async function cryAdd(){
     const h=cryLoad(),ex=h.find(c=>c.id===pick.id);
     const inv=parseFloat($('cInv').value)||0;const hold={id:pick.id,name:pick.name,sym:pick.symbol.toUpperCase(),qty,invested:inv,img:pick.large||pick.thumb||''};hold.color=cryColor(hold);
     if(ex){Object.assign(ex,hold)}else h.push(hold);
-    try{await cryPersist(h)}catch(e){crySyncMsg='Saved on this device. Drive sync failed: '+e.message}
+    try{await cryPersist(h)}catch(e){}
     $('cSym').value='';$('cQty').value='';$('cInv').value='';cryMsg('');
     tab(1);renderCrypto();
   }catch(e){cryMsg('Could not look up that coin, check your connection')}
 }
-async function cryRemove(id){const h=cryLoad().filter(c=>c.id!==id);try{await cryPersist(h)}catch(e){crySyncMsg='Removed on this device. Drive sync failed: '+e.message}renderCrypto()}
+async function cryRemove(id){const h=cryLoad().filter(c=>c.id!==id);try{await cryPersist(h)}catch(e){}renderCrypto()}
 function setApp(a){if(a==='cry'&&role!=='owner')a='sav';
   app=a;if(a==='cry')renderCrypto();if(a==='sav'||a==='inv')lastApp=a;
   document.documentElement.dataset.pg=(a==='set'||a==='cry')?a:'data';document.documentElement.dataset.app=a;
