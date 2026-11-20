@@ -572,6 +572,18 @@ html[data-pg="cry"] #hdiv1{margin-bottom:8px}
 .ctile .cbot span{font-size:11px;font-weight:700;color:#fff;white-space:nowrap}
 .ctile .cbot b{font-size:11px;font-weight:800}
 .ctile .cbot small{display:block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);font-weight:700}
+.ctile .cgn{display:block;margin-top:2px;font-size:10px;font-weight:800;white-space:nowrap}
+.ctile .cgn.up{color:#4fd17a}.ctile .cgn.down{color:#ff6b6b}
+html[data-theme="light"] .ctile .cgn.up{color:#1f8a4c}html[data-theme="light"] .ctile .cgn.down{color:#c8323c}
+.cgt{display:block;font-weight:800;font-size:12px}.cgt.up{color:#4fd17a}.cgt.down{color:#ff6b6b}
+html[data-theme="light"] .cgt.up{color:#1f8a4c}html[data-theme="light"] .cgt.down{color:#c8323c}
+.calloc{display:flex;height:8px;border-radius:999px;overflow:hidden;margin:6px 2px 10px;background:rgba(160,175,215,.18)}
+.calloc i{display:block;min-width:2px;height:100%}.calloc i+i{border-left:1px solid rgba(9,16,34,.55)}
+.csort{margin:0 0 8px}.csort button{padding:6px 4px;font-size:13px;flex:1}
+#cUndo{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 84px);transform:translate(-50%,20px);display:flex;align-items:center;gap:14px;padding:10px 14px;border-radius:999px;background:rgba(12,20,42,.96);color:#fff;font-size:14px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:60;white-space:nowrap}
+#cUndo.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+#cUndo button{border:0;background:none;color:var(--gold);font-weight:900;font-size:14px;padding:4px 6px}
+html[data-theme="light"] #cUndo{background:#16233f}
 .ctile .cbot .cval.up{color:#4fd17a}
 .ctile .cbot .cval.down{color:#ff6b6b}
 html[data-theme="light"] .ctile .cbot .cval.up{color:#1f8a4c}
@@ -919,22 +931,38 @@ function cryColor(h){if(CRY_BRAND[h.sym])return CRY_BRAND[h.sym];let x=0;for(con
 function hexA(c,a){if(c[0]!=='#')return c.replace(')',','+a+')').replace('hsl(','hsla(');const n=parseInt(c.slice(1),16);return 'rgba('+(n>>16&255)+','+(n>>8&255)+','+(n&255)+','+a+')'}
 function qtyFmt(n){const d=Math.abs(n)>999?0:2;return new Intl.NumberFormat('en-AU',{minimumFractionDigits:d,maximumFractionDigits:d}).format(n)}
 function fmtTile(n){return 'A$'+new Intl.NumberFormat('en-AU',{minimumFractionDigits:n>=1000?0:2,maximumFractionDigits:n>=1000?0:2}).format(n)}
+let crySort=(()=>{try{return localStorage.getItem('cry_sort')||'name'}catch(e){return 'name'}})();
+function crySetSort(m){crySort=m;try{localStorage.setItem('cry_sort',m)}catch(e){}renderCrypto()}
+function cryGainTxt(g,base){const p=base?g/base*100:0;return `${g>=0?'+':'-'}${fmtTile(Math.abs(g))} (${g>=0?'+':''}${p.toFixed(1)}%)`}
 function cryDraw(h,prices,at,msg){
-  const total=h.reduce((s,c)=>s+(prices[c.id]!=null?prices[c.id]*c.qty:0),0),invT=h.reduce((s,c)=>s+(c.invested||0),0);
+  const val=c=>prices[c.id]!=null?prices[c.id]*c.qty:null;
+  const total=h.reduce((s,c)=>s+(val(c)||0),0),invT=h.reduce((s,c)=>s+(c.invested||0),0);
+  const priced=h.filter(c=>val(c)!=null&&c.invested!=null);
+  const gainT=priced.reduce((s,c)=>s+(val(c)-c.invested),0),gainBase=priced.reduce((s,c)=>s+c.invested,0);
   const when=at?new Date(at).toLocaleTimeString('en-AU',{hour:'numeric',minute:'2-digit'}):'Refresh';
   msg=[msg,crySyncMsg].filter(Boolean).join(' · ');
-  $('cTop').innerHTML=`<div class="ctot"><div class="ctotop"><span>Crypto value</span><button class="cref" onclick="renderCrypto()" aria-label="Tap to refresh prices">${escH(when)}</button></div><b class="amt">${audFmt.format(total)}</b><small>Invested ${escH(audFmt.format(invT))} · ${h.length} Crypto ${h.length===1?'Asset':'Assets'}${msg?' · '+escH(msg):''}</small></div><div class="hdiv"></div>`;
-  const sorted=[...h].sort((a,b)=>a.name.localeCompare(b.name,'en',{sensitivity:'base'}));
+  const gainLine=priced.length?`<small class="cgt ${gainT>=0?'up':'down'}">Gain ${escH(cryGainTxt(gainT,gainBase))}</small>`:'';
+  const bar=total>0?h.filter(c=>(val(c)||0)>0).map(c=>`<i title="${escH(c.sym)} ${Math.round(val(c)/total*100)}%" style="flex:${val(c)};background:${escH(c.color||cryColor(c))}"></i>`).join(''):'';
+  const sb=[['name','A–Z'],['value','Value'],['gain','Gain']].map(([k,l])=>`<button class="${crySort===k?'on':''}" onclick="crySetSort('${k}')">${l}</button>`).join('');
+  $('cTop').innerHTML=`<div class="ctot"><div class="ctotop"><span>Crypto value</span><button class="cref" onclick="renderCrypto()" aria-label="Tap to refresh prices">${escH(when)}</button></div><b class="amt">${audFmt.format(total)}</b><small>Invested ${escH(audFmt.format(invT))} · ${h.length} Crypto ${h.length===1?'Asset':'Assets'}${msg?' · '+escH(msg):''}</small>${gainLine}</div>`+
+    (bar?`<div class="calloc" role="img" aria-label="Allocation by value">${bar}</div>`:'')+
+    `<div class="seg csort" role="group" aria-label="Sort coins">${sb}</div><div class="hdiv"></div>`;
+  const sorted=[...h].sort((a,b)=>{
+    if(crySort==='value')return (val(b)??-1e18)-(val(a)??-1e18);
+    if(crySort==='gain'){const g=c=>(val(c)!=null&&c.invested!=null)?val(c)-c.invested:-1e18;return g(b)-g(a)}
+    return a.name.localeCompare(b.name,'en',{sensitivity:'base'});
+  });
   $('cList').innerHTML=sorted.length?'<div class="ctiles">'+sorted.map(c=>{
-    const pr=prices[c.id],val=pr!=null?pr*c.qty:null,inv=c.invested;
-    const cls=val==null||inv==null?'':(val>inv?'up':'down');
+    const pr=prices[c.id],v=val(c),inv=c.invested;
+    const cls=v==null||inv==null?'':(v>inv?'up':'down');
+    const gn=v!=null&&inv!=null?`<span class="cgn ${cls}">${escH(cryGainTxt(v-inv,inv))}</span>`:'';
     const col=c.color||cryColor(c);
     return `<div class="ctile" data-id="${escH(c.id)}" style="border-color:${escH(col)};--ta:${hexA(col,.30)}">`+
       `<div class="ctop"><span class="cname">${escH(c.sym)}</span></div>`+
       `<div class="csym"><span>${escH(qtyFmt(c.qty))}</span></div>`+
-      `<div class="cright"><span class="amt">${pr!=null?fmtTile(pr):'price n/a'}</span></div>`+
+      `<div class="cright"><span class="amt">${pr!=null?fmtTile(pr):'price n/a'}</span>${gn}</div>`+
       `<div class="clogo">${c.img?`<img src="${escH(c.img)}" alt="${escH(c.name)}" onerror="this.outerHTML='<span>${escH(c.sym)}</span>'">`:`<span>${escH(c.sym)}</span>`}</div>`+
-      `<div class="cbot"><span><small>Invested</small><b class="amt">${inv!=null?fmtTile(inv):'—'}</b></span><span class="cval ${cls}"><small>Value</small><b class="amt">${val!=null?fmtTile(val):'—'}</b></span></div>`+
+      `<div class="cbot"><span><small>Invested</small><b class="amt">${inv!=null?fmtTile(inv):'—'}</b></span><span class="cval ${cls}"><small>Value</small><b class="amt">${v!=null?fmtTile(v):'—'}</b></span></div>`+
       `</div>`;
   }).join('')+'</div>':'<p class="pgh">No coins yet. Tap + to add one.</p>';
 }
@@ -1003,10 +1031,20 @@ function cryOpenEdit(id){
   $('cInv').value=c.invested==null?'':c.invested;cryMsg('');
   $('cDel').classList.remove('hide');$('cSave').textContent='Save changes';$('cHead').textContent='Edit '+c.sym;navSync();
 }
+let cryUndoT=null;
+function cryShowUndo(prev,name){
+  let t=document.getElementById('cUndo');
+  if(!t){t=document.createElement('div');t.id='cUndo';t.setAttribute('role','status');document.body.appendChild(t)}
+  t.innerHTML=`<span>Removed ${escH(name)}</span><button type="button">Undo</button>`;
+  t.querySelector('button').onclick=async()=>{clearTimeout(cryUndoT);t.classList.remove('show');try{await cryPersist(prev)}catch(e){}renderCrypto()};
+  t.classList.add('show');clearTimeout(cryUndoT);cryUndoT=setTimeout(()=>t.classList.remove('show'),6000);
+}
 async function cryDelete(){
   if(!cryEditId)return;
-  if(!confirm('Remove this coin from your crypto list?'))return;
-  const id=cryEditId;tab(1);await cryRemove(id);
+  const id=cryEditId,prev=cryLoad(),coin=prev.find(c=>c.id===id);
+  tab(1);if(!coin)return;
+  await cryRemove(id);
+  cryShowUndo(prev,coin.name||coin.sym||'coin');
 }
 let cryPressT=null,cryPressXY=null;
 function cryPressEnd(){clearTimeout(cryPressT);cryPressT=null}
