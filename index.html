@@ -565,6 +565,9 @@ html[data-theme="light"] .cadd input{background:#ffffff;color:#16233f}
 html[data-theme="light"] .ctile .cbot .cval.up{color:#1f8a4c}
 html[data-theme="light"] .ctile .cbot .cval.down{color:#c8323c}
 html[data-theme="light"] .ctile{--tb:rgba(255,255,255,.9)}
+html[data-theme="light"] .e>div:last-child span{color:#16233f}
+html[data-theme="light"] .pos,html[data-theme="light"] .e .pos{color:#1f8a4c}
+html[data-theme="light"] .neg,html[data-theme="light"] .e .neg{color:#c8323c}
 html[data-theme="light"] .card.sel,html[data-theme="light"] .card.gold.sel{background:linear-gradient(135deg,rgba(var(--ac),.34),rgba(255,255,255,.92) 85%);color:#16233f}
 html[data-theme="light"] .card.sel .cn,html[data-theme="light"] .card.sel .cn b,html[data-theme="light"] .card.sel .cl,html[data-theme="light"] .card.sel .cv,html[data-theme="light"] .card.sel .amt,html[data-theme="light"] .card.sel .rt b{color:#16233f}
 html[data-theme="light"] .ctile .clogo span{color:#16233f;background:rgba(22,35,63,.08)}
@@ -892,7 +895,7 @@ function cryMsg(t){const m=$('cMsg');if(m)m.textContent=t||''}
 const CRY_BRAND={BTC:'#F7931A',ETH:'#627EEA',SOL:'#9945FF',XRP:'#346AA9',ADA:'#0033AD',DOGE:'#C2A633',BNB:'#F3BA2F',USDT:'#26A17B',USDC:'#2775CA',LTC:'#A6A9AA',AVAX:'#E84142',DOT:'#E6007A',LINK:'#2A5ADA',TRX:'#EF0027',TON:'#0098EA',MATIC:'#8247E5',POL:'#8247E5',SHIB:'#F0503B',XLM:'#7D00FF',ATOM:'#2E3148',NEAR:'#00C08B'};
 function cryColor(h){if(CRY_BRAND[h.sym])return CRY_BRAND[h.sym];let x=0;for(const ch of h.id)x=(x*31+ch.charCodeAt(0))>>>0;return 'hsl('+(x%360)+',70%,60%)'}
 function hexA(c,a){if(c[0]!=='#')return c.replace(')',','+a+')').replace('hsl(','hsla(');const n=parseInt(c.slice(1),16);return 'rgba('+(n>>16&255)+','+(n>>8&255)+','+(n&255)+','+a+')'}
-function qtyFmt(n){return new Intl.NumberFormat('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)}
+function qtyFmt(n){const d=Math.abs(n)>9999?0:2;return new Intl.NumberFormat('en-AU',{minimumFractionDigits:d,maximumFractionDigits:d}).format(n)}
 function fmtTile(n){return 'A$'+new Intl.NumberFormat('en-AU',{minimumFractionDigits:n>=1000?0:2,maximumFractionDigits:n>=1000?0:2}).format(n)}
 function cryDraw(h,prices,at,msg){
   const total=h.reduce((s,c)=>s+(prices[c.id]!=null?prices[c.id]*c.qty:0),0),invT=h.reduce((s,c)=>s+(c.invested||0),0);
