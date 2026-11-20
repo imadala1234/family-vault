@@ -939,9 +939,10 @@ async function cryPersist(h){
   if(h.length)await call(base,'/values/'+enc(cryTab()+'!A2')+'?valueInputOption=USER_ENTERED',{method:'PUT',body:JSON.stringify({values:h.map(c=>[c.id,c.name,c.sym,c.qty,c.invested==null?'':c.invested,c.img||'',c.color||'',nowStamp()])})});
   L.setItem('cry_synced','1');crySyncMsg='';
 }
-async function cryPull(){
+async function cryPull(silentOnly){
   if(!cryCanSync()||!crySid())return null;
-  await tok();
+  if(silentOnly&&!fresh()){try{await silentRefresh()}catch(e){crySyncMsg='Showing coins saved on this device. Save a change to sync with Drive.';return null}}
+  else await tok();
   const r=await call('https://sheets.googleapis.com/v4/spreadsheets/'+crySid(),'/values/'+enc(cryTab()+'!A2:H')+'?valueRenderOption=UNFORMATTED_VALUE');
   const rows=(r.values||[]).filter(x=>x[0]).map(x=>({id:String(x[0]),name:String(x[1]||x[0]),sym:String(x[2]||''),qty:Number(x[3])||0,invested:x[4]===''||x[4]==null?null:Number(x[4]),img:String(x[5]||''),color:String(x[6]||'')}));
   const local=cryLoad();
@@ -953,7 +954,7 @@ async function cryPull(){
 async function renderCrypto(){
   let h=cryLoad();const c=cryCache();
   cryDraw(h,c.p,c.at,'');
-  try{const rows=await cryPull();if(rows)h=rows}catch(e){crySyncMsg='Drive sync failed: '+e.message}
+  try{const rows=await cryPull(true);if(rows)h=rows}catch(e){crySyncMsg='Drive sync failed: '+e.message}
   cryDraw(h,c.p,c.at,'');
   if(!h.length)return;
   const ids=h.map(x=>x.id);
