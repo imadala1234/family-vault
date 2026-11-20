@@ -580,7 +580,7 @@ html[data-pg="cry"] #hdiv1{margin-bottom:8px}
 .ctile .cbot small{display:block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);font-weight:700}
 .cgt{display:block;font-weight:800;font-size:12px}.cgt.up{color:#4fd17a}.cgt.down{color:#ff6b6b}
 html[data-theme="light"] .cgt.up{color:#1f8a4c}html[data-theme="light"] .cgt.down{color:#c8323c}
-.csort{display:flex;gap:6px;margin:0 0 6px}.csort button{flex:none;padding:3px 12px;font-size:12px;border-width:1px;border-radius:999px}
+
 .ctile .cbot .cval.up{color:#4fd17a}
 .ctile .cbot .cval.down{color:#ff6b6b}
 html[data-theme="light"] .ctile .cbot .cval.up{color:#1f8a4c}
@@ -651,6 +651,8 @@ html[data-theme="light"] .ctile .cbot .cval.up{color:#1f8a4c}
     <p class="pgh">Crypto prices</p>
     <div class="seg3 pref" data-key="fv_cry_refresh" data-def="0"><button data-v="0" onclick="setPref(this)">Manual</button><button data-v="5" onclick="setPref(this)">5 min</button><button data-v="15" onclick="setPref(this)">15 min</button></div>
     <p class="setnote">Automatic refresh runs while the Crypto page is open.</p>
+    <p class="pgh">Sort coins</p>
+    <div class="seg3 pref" data-key="cry_sort" data-def="name"><button data-v="name" onclick="setPref(this)">A–Z</button><button data-v="value" onclick="setPref(this)">Value</button><button data-v="gain" onclick="setPref(this)">Gain</button></div>
     <p class="pgh">Sync</p>
     <div class="setinfo"><span>Crypto last synced</span><b id="syncLast">—</b></div>
     <div class="setinfo"><span>Status</span><b id="syncSt">—</b></div>
@@ -964,8 +966,7 @@ function cryColor(h){if(CRY_BRAND[h.sym])return CRY_BRAND[h.sym];let x=0;for(con
 function hexA(c,a){if(c[0]!=='#')return c.replace(')',','+a+')').replace('hsl(','hsla(');const n=parseInt(c.slice(1),16);return 'rgba('+(n>>16&255)+','+(n>>8&255)+','+(n&255)+','+a+')'}
 function qtyFmt(n){const d=Math.abs(n)>999?0:2;return new Intl.NumberFormat('en-AU',{minimumFractionDigits:d,maximumFractionDigits:d}).format(n)}
 function fmtTile(n){const d=curDec()===0||Math.abs(n)>=1000?0:2;return curSym()+new Intl.NumberFormat('en-AU',{minimumFractionDigits:d,maximumFractionDigits:d}).format(n)}
-let crySort=(()=>{try{return localStorage.getItem('cry_sort')||'name'}catch(e){return 'name'}})();
-function crySetSort(m){crySort=m;try{localStorage.setItem('cry_sort',m)}catch(e){}renderCrypto()}
+const crySortMode=()=>prefGet('cry_sort','name');
 function cryGainTxt(g,base){const p=base?g/base*100:0;return `${g>=0?'+':'-'}${fmtTile(Math.abs(g))} (${g>=0?'+':''}${p.toFixed(1)}%)`}
 function cryDraw(h,prices,at,msg){
   const val=c=>prices[c.id]!=null?prices[c.id]*c.qty:null;
@@ -975,12 +976,11 @@ function cryDraw(h,prices,at,msg){
   const when=at?new Date(at).toLocaleTimeString('en-AU',{hour:'numeric',minute:'2-digit'}):'Refresh';
   msg=[msg,crySyncMsg].filter(Boolean).join(' · ');
   const gainLine=priced.length?`<small class="cgt ${gainT>=0?'up':'down'}">Gain ${escH(cryGainTxt(gainT,gainBase))}</small>`:'';
-  const sb=[['name','A–Z'],['value','Value'],['gain','Gain']].map(([k,l])=>`<button class="${crySort===k?'on':''}" onclick="crySetSort('${k}')">${l}</button>`).join('');
   $('cTop').innerHTML=`<div class="ctot"><div class="ctotop"><span>Crypto value</span><button class="cref" onclick="renderCrypto()" aria-label="Tap to refresh prices">${escH(when)}</button></div><b class="amt">${audFmt.format(total)}</b><small>Invested ${escH(audFmt.format(invT))} · ${h.length} Crypto ${h.length===1?'Asset':'Assets'}${msg?' · '+escH(msg):''}</small>${gainLine}</div>`+
-    `<div class="seg csort" role="group" aria-label="Sort coins">${sb}</div><div class="hdiv"></div>`;
+    `<div class="hdiv"></div>`;
   const sorted=[...h].sort((a,b)=>{
-    if(crySort==='value')return (val(b)??-1e18)-(val(a)??-1e18);
-    if(crySort==='gain'){const g=c=>(val(c)!=null&&c.invested!=null)?val(c)-c.invested:-1e18;return g(b)-g(a)}
+    if(crySortMode()==='value')return (val(b)??-1e18)-(val(a)??-1e18);
+    if(crySortMode()==='gain'){const g=c=>(val(c)!=null&&c.invested!=null)?val(c)-c.invested:-1e18;return g(b)-g(a)}
     return a.name.localeCompare(b.name,'en',{sensitivity:'base'});
   });
   $('cList').innerHTML=sorted.length?'<div class="ctiles">'+sorted.map(c=>{
@@ -1388,6 +1388,7 @@ function setPref(b){
   const k=b.parentElement.dataset.key;
   try{localStorage.setItem(k,b.dataset.v)}catch(e){}
   if(k==='fv_cur_sym'||k==='fv_cur_dec'){render();renderCrypto()}
+  if(k==='cry_sort')renderCrypto();
   syncSettings();
 }
 function syncSettings(){
