@@ -565,6 +565,8 @@ html[data-theme="light"] .cadd input{background:#ffffff;color:#16233f}
 html[data-theme="light"] .ctile .cbot .cval.up{color:#1f8a4c}
 html[data-theme="light"] .ctile .cbot .cval.down{color:#c8323c}
 html[data-theme="light"] .ctile{--tb:rgba(255,255,255,.9)}
+html[data-theme="light"] .card.sel,html[data-theme="light"] .card.gold.sel{background:linear-gradient(135deg,rgba(var(--ac),.34),rgba(255,255,255,.92) 85%);color:#16233f}
+html[data-theme="light"] .card.sel .cn,html[data-theme="light"] .card.sel .cn b,html[data-theme="light"] .card.sel .cl,html[data-theme="light"] .card.sel .cv,html[data-theme="light"] .card.sel .amt,html[data-theme="light"] .card.sel .rt b{color:#16233f}
 html[data-theme="light"] .ctile .clogo span{color:#16233f;background:rgba(22,35,63,.08)}
 html[data-theme="light"] .ctot{background:linear-gradient(135deg,rgba(242,166,90,.28),rgba(255,255,255,.92) 85%)}
 html[data-theme="light"] .sumbar b,html[data-theme="light"] .sumbar i{color:#16233f}
@@ -904,7 +906,7 @@ function cryDraw(h,prices,at,msg){
     const col=c.color||cryColor(c);
     return `<div class="ctile" data-id="${escH(c.id)}" style="border-color:${escH(col)};--ta:${hexA(col,.30)}">`+
       `<div class="ctop"><span class="cname">${escH(c.sym)}</span></div>`+
-      `<div class="csym"><span>${escH(qtyFmt(c.qty))} ${escH(c.sym)}</span></div>`+
+      `<div class="csym"><span>${escH(qtyFmt(c.qty))}</span></div>`+
       `<div class="cright"><span class="amt">${pr!=null?fmtTile(pr):'price n/a'}</span></div>`+
       `<div class="clogo">${c.img?`<img src="${escH(c.img)}" alt="${escH(c.name)}" onerror="this.outerHTML='<span>${escH(c.sym)}</span>'">`:`<span>${escH(c.sym)}</span>`}</div>`+
       `<div class="cbot"><span><small>Invested</small><b class="amt">${inv!=null?fmtTile(inv):'—'}</b></span><span class="cval ${cls}"><small>Value</small><b class="amt">${val!=null?fmtTile(val):'—'}</b></span></div>`+
