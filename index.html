@@ -528,6 +528,10 @@ html[data-theme="light"] .cryempty{background:#ffffff}
 .ctot span{display:block;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
 .ctot b{display:block;font-size:30px;margin:4px 0;color:#fff}
 .ctot small{color:var(--mut);font-size:12px}
+.ctotop{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ctotop span{margin:0}
+.cref{font-family:inherit;background:none;border:1px solid rgba(160,175,215,.5);border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700;color:var(--mut);white-space:nowrap}
+.cref i{font-style:normal;font-size:14px}
 .crow{display:flex;align-items:center;gap:10px;padding:12px 14px;margin-bottom:8px;border-radius:16px;border:1.5px solid rgba(242,166,90,.45);background:rgba(255,255,255,.04)}
 .crow .cn{flex:1;min-width:0}
 .crow .cn b{display:block;color:#fff;font-size:15px}
@@ -564,6 +568,7 @@ html[data-theme="light"] .cadd input{background:#ffffff;color:#16233f}
 .ctile .cbot .cval.down{color:#ff6b6b}
 html[data-theme="light"] .ctile .cbot .cval.up{color:#1f8a4c}
 html[data-theme="light"] .ctile .cbot .cval.down{color:#c8323c}
+html[data-theme="light"] .cref{color:#3b4a6b;border-color:#8ea3cf;background:rgba(255,255,255,.7)}
 html[data-theme="light"] .ctile{--tb:rgba(255,255,255,.9)}
 html[data-theme="light"] #addseg button,html[data-theme="light"] .seg button{color:#4a5672}
 html[data-theme="light"] #addseg button.on,html[data-theme="light"] .seg button.on,html[data-theme="light"] .seg button.on.x{color:#16233f;background:rgba(79,125,230,.22);border-color:rgba(79,125,230,.85);box-shadow:none}
@@ -860,6 +865,8 @@ const dollar=n=>(n<0?'-':'')+'A$'+Math.abs(n).toLocaleString('en-AU',{minimumFra
 const money=n=>'AUD '+n.toLocaleString('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fm=n=>Number(n).toLocaleString('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2});
 const num=v=>typeof v==='number'?v:(parseFloat(String(v==null?'':v).replace(/[^0-9.\-]/g,''))||0);
+function pdStamp(){const n=new Date();const el=document.getElementById('pd');if(el)el.textContent=n.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',year:'numeric'})+' · '+n.toLocaleTimeString('en-AU',{hour:'numeric',minute:'2-digit'})}
+setInterval(pdStamp,30000);
 const fdate=s=>{const[y,m,d]=String(s).split('-').map(Number);if(!y)return String(s);return new Date(y,m-1,d).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})};
 const today=()=>{const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -879,7 +886,7 @@ function navSync(){
   const add=sub===2,inv=app==='inv';
   $('n1').classList.toggle('on',!add&&app==='sav');$('n2').classList.toggle('on',!add&&inv);$('n3').classList.toggle('on',!add&&app==='cry');$('n4').classList.toggle('on',!add&&app==='set');$('nA').classList.toggle('on',add);
   $('pt').textContent=add?(app==='cry'?(cryEditId?'Edit crypto':'New crypto'):inv?'New investment':'New entry'):app==='set'?'Settings':app==='cry'?'Crypto':(inv?'Investments':'Savings');
-  $('pd').textContent=new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})+'';
+  pdStamp();
   $('sb').classList.toggle('hide',!inv||add);
   $('addseg').classList.toggle('hide',!(add&&typeof role!=='undefined'&&role==='owner'));
   $('as1').classList.toggle('on',app==='sav');$('as2').classList.toggle('on',inv);$('as3').classList.toggle('on',app==='cry');
@@ -903,9 +910,9 @@ function qtyFmt(n){const d=Math.abs(n)>9999?0:2;return new Intl.NumberFormat('en
 function fmtTile(n){return 'A$'+new Intl.NumberFormat('en-AU',{minimumFractionDigits:n>=1000?0:2,maximumFractionDigits:n>=1000?0:2}).format(n)}
 function cryDraw(h,prices,at,msg){
   const total=h.reduce((s,c)=>s+(prices[c.id]!=null?prices[c.id]*c.qty:0),0),invT=h.reduce((s,c)=>s+(c.invested||0),0);
-  const when=at?'Prices in AUD at '+new Date(at).toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'}):'Live prices not loaded yet';
+  const when=at?'Refreshed at '+new Date(at).toLocaleTimeString('en-AU',{hour:'numeric',minute:'2-digit'}):'Not refreshed yet';
   msg=[msg,crySyncMsg].filter(Boolean).join(' · ');
-  $('cTop').innerHTML=`<div class="ctot"><span>Crypto value</span><b class="amt">${audFmt.format(total)}</b><small>Invested ${escH(audFmt.format(invT))} · ${h.length} Crypto ${h.length===1?'Asset':'Assets'} · ${escH(when)}${msg?' · '+escH(msg):''}</small></div>`;
+  $('cTop').innerHTML=`<div class="ctot"><div class="ctotop"><span>Crypto value</span><button class="cref" onclick="renderCrypto()" aria-label="Refresh prices">${escH(when)} <i>&#8635;</i></button></div><b class="amt">${audFmt.format(total)}</b><small>Invested ${escH(audFmt.format(invT))} · ${h.length} Crypto ${h.length===1?'Asset':'Assets'}${msg?' · '+escH(msg):''}</small></div>`;
   const sorted=[...h].sort((a,b)=>a.name.localeCompare(b.name,'en',{sensitivity:'base'}));
   $('cList').innerHTML=sorted.length?'<div class="ctiles">'+sorted.map(c=>{
     const pr=prices[c.id],val=pr!=null?pr*c.qty:null,inv=c.invested;
