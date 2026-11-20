@@ -449,7 +449,7 @@ header{margin-bottom:8px;padding-bottom:8px}
 /* v14h: smaller page headings, divider above the tiles, one logo at launch */
 #ptitle h2{font-size:24px;letter-spacing:-.5px}
 @media (max-height:700px){#ptitle h2{font-size:21px}}
-#cards{border-top:1px solid rgba(212,178,109,.35);padding-top:10px;margin-top:4px}
+#cards{border-top:0;padding-top:0;margin-top:0}
 html.lk #splash{display:none}
 /* v14g: push the top bar down one row, clear of the status bar */
 .top{padding-top:calc(env(safe-area-inset-top,0px) + 30px)}
@@ -917,7 +917,7 @@ function cryMsg(t){const m=$('cMsg');if(m)m.textContent=t||''}
 const CRY_BRAND={BTC:'#F7931A',ETH:'#627EEA',SOL:'#9945FF',XRP:'#346AA9',ADA:'#0033AD',DOGE:'#C2A633',BNB:'#F3BA2F',USDT:'#26A17B',USDC:'#2775CA',LTC:'#A6A9AA',AVAX:'#E84142',DOT:'#E6007A',LINK:'#2A5ADA',TRX:'#EF0027',TON:'#0098EA',MATIC:'#8247E5',POL:'#8247E5',SHIB:'#F0503B',XLM:'#7D00FF',ATOM:'#2E3148',NEAR:'#00C08B'};
 function cryColor(h){if(CRY_BRAND[h.sym])return CRY_BRAND[h.sym];let x=0;for(const ch of h.id)x=(x*31+ch.charCodeAt(0))>>>0;return 'hsl('+(x%360)+',70%,60%)'}
 function hexA(c,a){if(c[0]!=='#')return c.replace(')',','+a+')').replace('hsl(','hsla(');const n=parseInt(c.slice(1),16);return 'rgba('+(n>>16&255)+','+(n>>8&255)+','+(n&255)+','+a+')'}
-function qtyFmt(n){const d=Math.abs(n)>9999?0:2;return new Intl.NumberFormat('en-AU',{minimumFractionDigits:d,maximumFractionDigits:d}).format(n)}
+function qtyFmt(n){const d=Math.abs(n)>999?0:2;return new Intl.NumberFormat('en-AU',{minimumFractionDigits:d,maximumFractionDigits:d}).format(n)}
 function fmtTile(n){return 'A$'+new Intl.NumberFormat('en-AU',{minimumFractionDigits:n>=1000?0:2,maximumFractionDigits:n>=1000?0:2}).format(n)}
 function cryDraw(h,prices,at,msg){
   const total=h.reduce((s,c)=>s+(prices[c.id]!=null?prices[c.id]*c.qty:0),0),invT=h.reduce((s,c)=>s+(c.invested||0),0);
