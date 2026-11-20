@@ -530,7 +530,7 @@ html[data-theme="light"] .cryempty{background:#ffffff}
 .ctot small{color:var(--mut);font-size:12px}
 #tot.tot2{margin:0}
 #hdivI+*{margin-top:0!important}
-#hdivI{margin:12px 4px 0}
+#hdivI{margin:12px 0 4px}
 .hdiv{height:1px;margin:12px 0;background:linear-gradient(90deg,transparent,rgba(212,178,109,.85) 20%,rgba(212,178,109,.85) 80%,transparent)}
 html[data-theme="light"] .hdiv{background:linear-gradient(90deg,transparent,rgba(160,130,60,.6) 20%,rgba(160,130,60,.6) 80%,transparent)}
 .ctotop{display:flex;justify-content:space-between;align-items:center;gap:8px}
@@ -554,6 +554,9 @@ html[data-theme="light"] .cadd input{background:#ffffff;color:#16233f}
 
 /* v19: crypto tiles like savings, add via + */
 #pgCry.hide{display:none!important}
+#pgCry{padding-top:0!important}
+#cTop{margin-top:0}
+html[data-pg="cry"] #hdiv1{margin-bottom:8px}
 .ctiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 2px 4px;max-height:calc(3*118px + 2*10px + 8px);overflow-y:auto;-webkit-overflow-scrolling:touch}
 .ctile{background:linear-gradient(135deg,var(--ta),var(--tb,rgba(12,20,42,.88)) 85%);position:relative;height:118px;box-sizing:border-box;border-radius:22px;border:1.5px solid;padding:8px 10px;overflow:hidden;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .ctile .csym{position:absolute;top:9px;left:10px;max-width:55%}
