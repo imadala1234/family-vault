@@ -476,7 +476,7 @@ html.lk #splash{display:none}
 #tb{display:none!important}
 .pg{display:none}
 html[data-pg="set"] #pgSet,html[data-pg="cry"] #pgCry{display:block}
-html[data-pg="set"] #hdiv1,html[data-pg="set"] #funds,html[data-pg="cry"] #funds,html[data-pg="set"] #mt,html[data-pg="cry"] #mt,html[data-pg="set"] #st,html[data-pg="cry"] #st,html[data-pg="set"] #sb,html[data-pg="cry"] #sb,html[data-pg="set"] #addseg,html[data-pg="set"] #nA,html[data-pg="set"] #form,html[data-pg="cry"] #form,html[data-pg="set"] #formI,html[data-pg="cry"] #formI{display:none!important}
+html:not([data-app="sav"]) #hdivS,html:not([data-app="inv"]) #hdivI,html[data-pg="set"] #hdiv1,html[data-pg="set"] #funds,html[data-pg="cry"] #funds,html[data-pg="set"] #mt,html[data-pg="cry"] #mt,html[data-pg="set"] #st,html[data-pg="cry"] #st,html[data-pg="set"] #sb,html[data-pg="cry"] #sb,html[data-pg="set"] #addseg,html[data-pg="set"] #nA,html[data-pg="set"] #form,html[data-pg="cry"] #form,html[data-pg="set"] #formI,html[data-pg="cry"] #formI{display:none!important}
 .pg{padding:6px 2px}
 .pgh{margin:0 0 12px;color:var(--mut);font-size:13px;font-weight:700}
 .setrow{display:flex;align-items:center;justify-content:space-between;width:100%;padding:16px 18px;margin:0 0 10px;border-radius:18px;border:1.5px solid rgba(120,150,230,.55);background:linear-gradient(135deg,rgba(84,130,206,.30),rgba(12,20,42,.88) 85%);color:#fff;font-size:16px;font-weight:800;text-align:left}
@@ -528,7 +528,10 @@ html[data-theme="light"] .cryempty{background:#ffffff}
 .ctot span{display:block;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
 .ctot b{display:block;font-size:24px;margin:2px 0;color:#fff}
 .ctot small{color:var(--mut);font-size:12px}
-.hdiv{height:1px;margin:8px 0 10px;background:linear-gradient(90deg,transparent,rgba(212,178,109,.85) 20%,rgba(212,178,109,.85) 80%,transparent)}
+#tot.tot2{margin:0}
+#hdivI+*{margin-top:0!important}
+#hdivI{margin:12px 4px 0}
+.hdiv{height:1px;margin:12px 0;background:linear-gradient(90deg,transparent,rgba(212,178,109,.85) 20%,rgba(212,178,109,.85) 80%,transparent)}
 html[data-theme="light"] .hdiv{background:linear-gradient(90deg,transparent,rgba(160,130,60,.6) 20%,rgba(160,130,60,.6) 80%,transparent)}
 .ctotop{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .ctotop span{margin:0}
@@ -604,6 +607,7 @@ html[data-theme="light"] .ctile .cbot .cval.up{color:#1f8a4c}
   <button id="m2" onclick="setApp('inv')">Investments</button>
 </div>
 <div class="sumbar hide" id="sb"><span><b>Invested</b><i id="s_inv">A$0</i></span><span><b>Share</b><i id="s_share">A$0</i></span><span><b>Profit</b><i id="s_profit">A$0</i></span></div>
+<div class="hdiv" id="hdivI"></div>
 <div class="tabs sub" id="st">
   <button id="t1" class="on" onclick="tab(1)">Stack</button>
   <button id="t2" onclick="tab(2)">Add</button>
@@ -654,6 +658,7 @@ html[data-theme="light"] .ctile .cbot .cval.up{color:#1f8a4c}
 <div id="funds">
   <div id="sync" class="sync hide" onclick="manualSync()">Showing saved entries · tap to refresh</div>
   <div id="tot" class="tot2"><span class="tl">Total savings</span><span class="tv"><small>A</small><b id="tv">$0</b></span></div>
+  <div class="hdiv" id="hdivS"></div>
   <div id="cards"></div>
   <div id="hrow">
     <h3 id="ht">Recent entries</h3>
@@ -859,7 +864,7 @@ function fillSections(){
 }
 
 let entries=[],type='Income',filter=null,store=null,role='';
-let app='sav',sub=1;
+let app='sav',sub=1;document.documentElement.dataset.app=app;
 let ients=[],iproj=[],ifilter=null,istore=null,itype='Investment';
 const PCOL=['gold','savings','emergency','travel','violet'];
 const ITYPES=[['Investment','Investment'],['Profit Made','Profit'],['Reinvested Profit','Reinvested']];
@@ -1044,7 +1049,7 @@ async function cryAdd(){
 async function cryRemove(id){const h=cryLoad().filter(c=>c.id!==id);try{await cryPersist(h)}catch(e){crySyncMsg='Removed on this device. Drive sync failed: '+e.message}renderCrypto()}
 function setApp(a){
   app=a;if(a==='cry')renderCrypto();if(a==='sav'||a==='inv')lastApp=a;
-  document.documentElement.dataset.pg=(a==='set'||a==='cry')?a:'data';
+  document.documentElement.dataset.pg=(a==='set'||a==='cry')?a:'data';document.documentElement.dataset.app=a;
   $('m1').classList.toggle('on',a==='sav');$('m2').classList.toggle('on',a==='inv');
   $('t1').textContent=a==='sav'?'Stack':'Build';if(!$('sq').classList.contains('hide'))closeSearch();updateTools();$('sb').classList.toggle('hide',a!=='inv');
   $('cards').scrollTop=0;updateSync();render();tab(1);
