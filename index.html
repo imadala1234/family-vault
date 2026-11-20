@@ -476,7 +476,7 @@ html.lk #splash{display:none}
 #tb{display:none!important}
 .pg{display:none}
 html[data-pg="set"] #pgSet,html[data-pg="cry"] #pgCry{display:block}
-html[data-pg="set"] #funds,html[data-pg="cry"] #funds,html[data-pg="set"] #mt,html[data-pg="cry"] #mt,html[data-pg="set"] #st,html[data-pg="cry"] #st,html[data-pg="set"] #sb,html[data-pg="cry"] #sb,html[data-pg="set"] #addseg,html[data-pg="set"] #nA,html[data-pg="set"] #form,html[data-pg="cry"] #form,html[data-pg="set"] #formI,html[data-pg="cry"] #formI{display:none!important}
+html[data-pg="set"] #hdiv1,html[data-pg="set"] #funds,html[data-pg="cry"] #funds,html[data-pg="set"] #mt,html[data-pg="cry"] #mt,html[data-pg="set"] #st,html[data-pg="cry"] #st,html[data-pg="set"] #sb,html[data-pg="cry"] #sb,html[data-pg="set"] #addseg,html[data-pg="set"] #nA,html[data-pg="set"] #form,html[data-pg="cry"] #form,html[data-pg="set"] #formI,html[data-pg="cry"] #formI{display:none!important}
 .pg{padding:6px 2px}
 .pgh{margin:0 0 12px;color:var(--mut);font-size:13px;font-weight:700}
 .setrow{display:flex;align-items:center;justify-content:space-between;width:100%;padding:16px 18px;margin:0 0 10px;border-radius:18px;border:1.5px solid rgba(120,150,230,.55);background:linear-gradient(135deg,rgba(84,130,206,.30),rgba(12,20,42,.88) 85%);color:#fff;font-size:16px;font-weight:800;text-align:left}
@@ -524,10 +524,12 @@ html[data-theme="light"] .tb button,html[data-theme="light"] .tbx,html[data-them
 html[data-theme="light"] .cryempty{background:#ffffff}
 
 /* v18: crypto holdings */
-.ctot{padding:18px;border-radius:20px;border:1.5px solid rgba(242,166,90,.7);background:linear-gradient(135deg,rgba(242,166,90,.28),rgba(12,20,42,.88) 85%);margin-bottom:12px}
+.ctot{padding:10px 14px;border-radius:16px;border:1.5px solid rgba(242,166,90,.7);background:linear-gradient(135deg,rgba(242,166,90,.28),rgba(12,20,42,.88) 85%);margin-bottom:6px}
 .ctot span{display:block;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
-.ctot b{display:block;font-size:30px;margin:4px 0;color:#fff}
+.ctot b{display:block;font-size:24px;margin:2px 0;color:#fff}
 .ctot small{color:var(--mut);font-size:12px}
+.hdiv{height:1px;margin:8px 0 10px;background:linear-gradient(90deg,transparent,rgba(212,178,109,.85) 20%,rgba(212,178,109,.85) 80%,transparent)}
+html[data-theme="light"] .hdiv{background:linear-gradient(90deg,transparent,rgba(160,130,60,.6) 20%,rgba(160,130,60,.6) 80%,transparent)}
 .ctotop{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .ctotop span{margin:0}
 .cref{font-family:inherit;background:none;border:1px solid rgba(160,175,215,.5);border-radius:999px;padding:4px 10px;font-size:12px;font-weight:700;color:var(--mut);white-space:nowrap}
@@ -595,6 +597,7 @@ html[data-theme="light"] .ctile .cbot .cval.up{color:#1f8a4c}
 <div class="top">
 <header><span class="pb" id="pSM"><img class="smg" src="sm.png" alt="SM"><b class="tx">SM</b><svg class="ey1" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="ey2" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></svg></span><h1><img src="favicon.png" alt=""><span class="w1">Family</span><span class="w2">VAULT</span></h1><span class="pb" id="pDM"><b class="tx">DM</b><svg class="ey1" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg class="ey2" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></svg></span></header>
 <div id="ptitle"><h2 id="pt">Savings</h2><p id="pd"></p></div>
+<div class="hdiv" id="hdiv1"></div>
 <div id="addseg" class="hide"><button id="as1" onclick="goAdd('sav')">Savings</button><button id="as2" onclick="goAdd('inv')">Investments</button><button id="as3" onclick="goAdd('cry')">Crypto</button></div>
 <div class="tabs" id="mt">
   <button id="m1" class="on" onclick="setApp('sav')">Savings</button>
@@ -912,7 +915,7 @@ function cryDraw(h,prices,at,msg){
   const total=h.reduce((s,c)=>s+(prices[c.id]!=null?prices[c.id]*c.qty:0),0),invT=h.reduce((s,c)=>s+(c.invested||0),0);
   const when=at?'Refreshed at '+new Date(at).toLocaleTimeString('en-AU',{hour:'numeric',minute:'2-digit'}):'Not refreshed yet';
   msg=[msg,crySyncMsg].filter(Boolean).join(' · ');
-  $('cTop').innerHTML=`<div class="ctot"><div class="ctotop"><span>Crypto value</span><button class="cref" onclick="renderCrypto()" aria-label="Refresh prices">${escH(when)} <i>&#8635;</i></button></div><b class="amt">${audFmt.format(total)}</b><small>Invested ${escH(audFmt.format(invT))} · ${h.length} Crypto ${h.length===1?'Asset':'Assets'}${msg?' · '+escH(msg):''}</small></div>`;
+  $('cTop').innerHTML=`<div class="ctot"><div class="ctotop"><span>Crypto value</span><button class="cref" onclick="renderCrypto()" aria-label="Refresh prices"><i>&#8635;</i></button></div><b class="amt">${audFmt.format(total)}</b><small>Invested ${escH(audFmt.format(invT))} · ${h.length} Crypto ${h.length===1?'Asset':'Assets'}${msg?' · '+escH(msg):''}</small></div><div class="hdiv"></div>`;
   const sorted=[...h].sort((a,b)=>a.name.localeCompare(b.name,'en',{sensitivity:'base'}));
   $('cList').innerHTML=sorted.length?'<div class="ctiles">'+sorted.map(c=>{
     const pr=prices[c.id],val=pr!=null?pr*c.qty:null,inv=c.invested;
