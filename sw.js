@@ -1,5 +1,5 @@
-const CACHE = 'family-vault-v52';
-const SHELL = ['./', 'index.html', 'config.js', 'manifest.webmanifest', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png', 'logo.png', 'logo-sm.png', 'sm.png'];
+const CACHE = 'family-vault-v53';
+const SHELL = ['./', 'index.html', 'config.js', 'manifest.webmanifest', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png', 'logo.png', 'logo-mark.png', 'logo-sm.png', 'sm.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL))); self.skipWaiting(); });
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(k => Promise.all(k.filter(x => x !== CACHE).map(x => caches.delete(x)))));
